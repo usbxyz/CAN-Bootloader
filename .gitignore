@@ -3,12 +3,8 @@
 *.slo
 *.lo
 *.o
-*.a
 *.la
 *.lai
-*.so
-*.dll
-*.dylib
 
 # Qt-es
 
@@ -36,3 +32,8 @@ Makefile*
 # QtCtreator CMake
 CMakeLists.txt.user
 
+# MDK
+Listing
+Output
+*.uvguix.*
+JLink*

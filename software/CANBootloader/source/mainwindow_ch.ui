@@ -1,0 +1,858 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>658</width>
+    <height>486</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>USB2XXX USB2CAN Bootloader</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/images/easyicon_net.png</normaloff>:/images/easyicon_net.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="minimumSize">
+           <size>
+            <width>330</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>节点列表</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="nodeListTableWidget">
+             <column>
+              <property name="text">
+               <string>节点地址</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>固件类型</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>固件版本</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>命令列表</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="cmdListTableWidget">
+             <row>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>5</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>6</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>7</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>8</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string>名称</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>值（Hex）</string>
+              </property>
+             </column>
+             <item row="0" column="0">
+              <property name="text">
+               <string>Erase</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="0" column="1">
+              <property name="text">
+               <string>00</string>
+              </property>
+             </item>
+             <item row="1" column="0">
+              <property name="text">
+               <string>WriteInfo</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="1" column="1">
+              <property name="text">
+               <string>01</string>
+              </property>
+             </item>
+             <item row="2" column="0">
+              <property name="text">
+               <string>Write</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="2" column="1">
+              <property name="text">
+               <string>02</string>
+              </property>
+             </item>
+             <item row="3" column="0">
+              <property name="text">
+               <string>Check</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="3" column="1">
+              <property name="text">
+               <string>03</string>
+              </property>
+             </item>
+             <item row="4" column="0">
+              <property name="text">
+               <string>SetBaudRate</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="4" column="1">
+              <property name="text">
+               <string>04</string>
+              </property>
+             </item>
+             <item row="5" column="0">
+              <property name="text">
+               <string>Excute</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="5" column="1">
+              <property name="text">
+               <string>05</string>
+              </property>
+             </item>
+             <item row="6" column="0">
+              <property name="text">
+               <string>CmdSuccess</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="6" column="1">
+              <property name="text">
+               <string>08</string>
+              </property>
+             </item>
+             <item row="7" column="0">
+              <property name="text">
+               <string>CmdFaild</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item row="7" column="1">
+              <property name="text">
+               <string>09</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::Panel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>设备号：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="deviceIndexComboBox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>1</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>3</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>5</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>6</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>7</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>9</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="minimumSize">
+                  <size>
+                   <width>48</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>通道号：</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="channelIndexComboBox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>1</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>新波特率：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="newBaudRateComboBox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>1000 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>900 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>800 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>666 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>600 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>500 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>400 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>300 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>250 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>225 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>200 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>160 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>150 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>144 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>125 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>120 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>100 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>90 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>80 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>75 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>60 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>50 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>40 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>30 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20 Kbps</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="setbaudRatePushButton">
+               <property name="minimumSize">
+                <size>
+                 <width>80</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>设置波特率</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>波特率：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="baudRateComboBox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>1000 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>900 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>800 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>666 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>600 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>500 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>400 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>300 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>250 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>225 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>200 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>160 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>150 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>144 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>125 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>120 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>100 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>90 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>80 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>75 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>60 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>50 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>40 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>30 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20 Kbps</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="minimumSize">
+                  <size>
+                   <width>48</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>固件：</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="firmwareLineEdit"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="openFirmwareFilePushButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>打开文件</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="allNodeCheckBox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>75</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>所有节点</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="updateFirmwarePushButton">
+               <property name="minimumSize">
+                <size>
+                 <width>80</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>更新固件</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>658</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="openFirmwareFileAction"/>
+    <addaction name="exitAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>操作</string>
+    </property>
+    <addaction name="scanNodeAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="contactUsAction"/>
+    <addaction name="aboutAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>工具</string>
+    </property>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_4"/>
+   <addaction name="menu_3"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="openFirmwareFileAction"/>
+   <addaction name="scanNodeAction"/>
+   <addaction name="contactUsAction"/>
+   <addaction name="aboutAction"/>
+   <addaction name="separator"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="exitAction">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/images/gif_48_026.gif</normaloff>:/images/gif_48_026.gif</iconset>
+   </property>
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="scanNodeAction">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/images/gif_48_086.gif</normaloff>:/images/gif_48_086.gif</iconset>
+   </property>
+   <property name="text">
+    <string>扫描节点</string>
+   </property>
+  </action>
+  <action name="contactUsAction">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/images/gif_48_079.gif</normaloff>:/images/gif_48_079.gif</iconset>
+   </property>
+   <property name="text">
+    <string>联系我们</string>
+   </property>
+  </action>
+  <action name="aboutAction">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/images/gif_48_052.gif</normaloff>:/images/gif_48_052.gif</iconset>
+   </property>
+   <property name="text">
+    <string>关于软件</string>
+   </property>
+  </action>
+  <action name="openFirmwareFileAction">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/images/gif_48_045.gif</normaloff>:/images/gif_48_045.gif</iconset>
+   </property>
+   <property name="text">
+    <string>打开文件</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
+ <connections/>
+</ui>
