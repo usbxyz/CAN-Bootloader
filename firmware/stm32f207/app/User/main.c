@@ -22,10 +22,21 @@
 /* Includes ------------------------------------------------------------------*/ 
 #include	"main.h"
 #include "can_app.h"
-CBL_CMD_LIST CMD_List;
-extern CanRxMsg CAN1_RxMessage,CAN2_RxMessage;
-extern volatile uint8_t CAN1_CanRxMsgFlag;//接收到CAN数据后的标志
-extern volatile uint8_t CAN2_CanRxMsgFlag;
+#include "delay.h"
+extern CanRxMsg CAN_RxMessage;
+extern volatile uint8_t CAN_CanRxMsgFlag;//接收到CAN数据后的标志
+//命令参数必须跟上位机软件的命令参数一致
+CBL_CMD_LIST CMD_List = 
+{
+  .Erase = 0x00,      //擦除APP区域数据
+  .WriteInfo = 0x01,  //设置多字节写数据相关参数（写起始地址，数据量）
+  .Write = 0x02,      //以多字节形式写数据
+  .Check = 0x03,      //检测节点是否在线，同时返回固件信息
+  .SetBaudRate = 0x04,//设置节点波特率
+  .Excute = 0x05,     //执行固件
+  .CmdSuccess = 0x08, //命令执行成功
+  .CmdFaild = 0x09,   //命令执行失败
+};
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
@@ -98,28 +109,16 @@ int main(void)
   To reconfigure the default setting of SystemInit() function, refer to
   system_stm32fxxx.c file
   */
-  NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x8000); //重新映射中断向量表
-	if(*((uint32_t *)0x08004000)==0xFFFFFFFF){
-		uint32_t addr = 0x08004000;
-		__align(4) static unsigned char data[4]={0x12,0x34,0x56,0x78};
-		FLASH_Unlock();
-		CAN_BOOT_ProgramDatatoFlash(addr,data,4);
-		FLASH_Lock();
-	}
-	__set_PRIMASK(0);//开启所有中断 
-	CAN_Configuration(CAN1,1000000);
-	CAN_Configuration(CAN2,1000000);
-	
-	CMD_List.OnlineCheck = 0x01;
-	CMD_List.EraseFlash = 0x03;
-	CMD_List.SetBaudRate = 0x04;
-	CMD_List.BlockWriteInfo = 0x05;
-	CMD_List.WriteBlockFlash = 0x06;
-	CMD_List.BlockReadInfo = 0x07;
-	CMD_List.ReadBlockFlash = 0x08;
-	CMD_List.ExcuteApp = 0x09;
-	CMD_List.CmdFaild = 0x00;
-	CMD_List.CmdSuccess = 0x0A;
+  if(*((uint32_t *)APP_EXE_FLAG_ADDR)==0xFFFFFFFF){
+    __align(4) static unsigned char data[4]={0x12,0x34,0x56,0x78};
+    FLASH_Unlock();
+    CAN_BOOT_ProgramDatatoFlash(APP_EXE_FLAG_ADDR,data,4);
+    FLASH_Lock();
+  }
+  __set_PRIMASK(0);//开启总中断
+  delay_init(120);
+  CAN_Configuration(1000000);
+  //设置读保护
 // 	if(FLASH_OB_GetRDP() != SET)
 // 	{
 // 		FLASH_OB_Unlock();
@@ -127,17 +126,13 @@ int main(void)
 // 		FLASH_OB_Launch();
 // 		FLASH_OB_Lock();		
 // 	}
-    while (1)
-    {
-      if(CAN1_CanRxMsgFlag){
-        CAN1_CanRxMsgFlag = 0;
-        CAN_BOOT_ExecutiveCommand(CAN1,&CAN1_RxMessage);
-      }
-      if(CAN2_CanRxMsgFlag){
-        CAN2_CanRxMsgFlag = 0;
-        CAN_BOOT_ExecutiveCommand(CAN2,&CAN2_RxMessage);
-      }
+  while (1)
+  {
+    if(CAN_CanRxMsgFlag){
+      CAN_CanRxMsgFlag = 0;
+      CAN_BOOT_ExecutiveCommand(&CAN_RxMessage);
     }
+  }
 } 
 
 #ifdef USE_FULL_ASSERT

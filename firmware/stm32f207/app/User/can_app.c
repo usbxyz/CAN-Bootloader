@@ -18,6 +18,7 @@
 #include "main.h"
 #include "can_app.h"
 #include "can_driver.h"
+#include "delay.h"
 /* Private typedef -----------------------------------------------------------*/
 typedef  void (*pFunction)(void);
 /* Private define ------------------------------------------------------------*/
@@ -102,8 +103,8 @@ uint32_t GetSector(uint32_t Address)
 }
 /**
   * @brief  将数据烧写到指定地址的Flash中 。
-  * @param  StartAddress Flash起始地址。
-  * @param  pData 数据存储区起始地址。
+  * @param  Address Flash起始地址。
+  * @param  Data 数据存储区起始地址。
   * @param  DataNum 数据字节数。
   * @retval 数据烧写状态。
   */
@@ -113,7 +114,7 @@ FLASH_Status CAN_BOOT_ProgramDatatoFlash(uint32_t StartAddress,uint8_t *pData,ui
 
 	uint32_t i;
 
-	if(StartAddress<0x8004000){
+	if(StartAddress<APP_EXE_FLAG_START_ADDR){
 		return FLASH_ERROR_PGS;
 	}
 
@@ -139,33 +140,32 @@ FLASH_Status CAN_BOOT_ProgramDatatoFlash(uint32_t StartAddress,uint8_t *pData,ui
   * @param  EndPage 结束扇区
   * @retval 扇区擦出状态
   */
-FLASH_Status CAN_BOOT_ErasePage(uint32_t StartPageAddr,uint32_t EndPageAddr)
+FLASH_Status CAN_BOOT_ErasePage(uint32_t StartAddr,uint32_t EndAddr)
 {
-	FLASH_Status FLASHStatus=FLASH_COMPLETE;
-	uint32_t StartSector, EndSector;
-	uint32_t SectorCounter=0;
+  FLASH_Status FLASHStatus=FLASH_COMPLETE;
+  uint32_t StartSector, EndSector;
+  uint32_t SectorCounter=0;
+  if(StartAddr < APP_EXE_FLAG_START_ADDR){
+    return FLASH_ERROR_PGA;
+  }
   /* Clear pending flags (if any) */  
   FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | 
                   FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR|FLASH_FLAG_PGSERR); 
   /* Get the number of the start and end sectors */
-  StartSector = GetSector(StartPageAddr);
-  EndSector = GetSector(EndPageAddr);
-  for (SectorCounter = StartSector; SectorCounter < EndSector; SectorCounter += 8)
+  StartSector = GetSector(StartAddr);
+  EndSector = GetSector(EndAddr);
+  for (SectorCounter = StartSector; SectorCounter <= EndSector; SectorCounter += 8)
   {
     /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
        be done by word */ 
-		FLASHStatus = FLASH_EraseSector(SectorCounter, VoltageRange_3);
+    FLASHStatus = FLASH_EraseSector(SectorCounter, VoltageRange_3);
     if (FLASHStatus != FLASH_COMPLETE)
     { 
-			return FLASHStatus;
+      return FLASHStatus;
     }
   }
-	return	FLASHStatus; 
+  return	FLASHStatus; 
 }
-
-
-
-
 
 /**
   * @brief  获取节点地址信息
@@ -174,125 +174,96 @@ FLASH_Status CAN_BOOT_ErasePage(uint32_t StartPageAddr,uint32_t EndPageAddr)
   */
 uint16_t CAN_BOOT_GetAddrData(void)
 {
-	return 0x123;
+  return Read_CAN_Address();
 }
+
 /**
   * @brief  控制程序跳转到指定位置开始执行 。
   * @param  Addr 程序执行地址。
   * @retval 程序跳转状态。
   */
-void CAN_BOOT_JumpToApplication(uint32_t Addr)
+void CAN_BOOT_JumpToApplication(__IO uint32_t Addr)
 {
-	pFunction Jump_To_Application;
-	__IO uint32_t JumpAddress; 
-	/* Test if user code is programmed starting from address "ApplicationAddress" */
-	if (((*(__IO uint32_t*)Addr) & 0x2FFE0000 ) == 0x20000000)
-	{ 
-	  /* Jump to user application */
-	  JumpAddress = *(__IO uint32_t*) (Addr + 4);
-	  Jump_To_Application = (pFunction) JumpAddress;
-		__set_PRIMASK(1);//关闭所有中断
-		CAN_ITConfig(CAN1,CAN_IT_FMP0, DISABLE);
-	  /* Initialize user application's Stack Pointer */
-	  __set_MSP(*(__IO uint32_t*) Addr);
-	  Jump_To_Application();
-	}
+  static pFunction Jump_To_Application;
+  __IO uint32_t JumpAddress; 
+  __set_PRIMASK(1);//关闭所有中断
+  /* Test if user code is programmed starting from address "ApplicationAddress" */
+  if (((*(__IO uint32_t*)Addr) & 0x2FFE0000 ) == 0x20000000)
+  { 
+    /* Jump to user application */
+    JumpAddress = *(__IO uint32_t*) (Addr + 4);
+    Jump_To_Application = (pFunction) JumpAddress;
+    /* Initialize user application's Stack Pointer */
+    __set_MSP(*(__IO uint32_t*)Addr);
+    Jump_To_Application();
+  }
 }
 
 /**
   * @brief  执行主机下发的命令
   * @param  pRxMessage CAN总线消息
-  * @retval 无 
+  * @retval 无
   */
-void CAN_BOOT_ExecutiveCommand(CAN_TypeDef* CANx,CanRxMsg *pRxMessage)
+void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
 {
-	CanTxMsg TxMessage;
-	uint8_t can_cmd = (pRxMessage->ExtId)&CMD_MASK;//ID的bit0~bit3位为命令码
-	uint16_t can_addr = (pRxMessage->ExtId >> CMD_WIDTH);//ID的bit4~bit15位为节点地址
-	uint32_t BaudRate;
-	static uint32_t jump_addr;
-	//判断接收的数据地址是否和本节点地址匹配，若不匹配则直接返回，不做任何事情
-	if((can_addr!=CAN_BOOT_GetAddrData())&&(can_addr!=0)){
-		return;
-	}
-	TxMessage.DLC = 0;
-	TxMessage.ExtId = 0;
-	TxMessage.IDE = CAN_Id_Extended;
-	TxMessage.RTR = CAN_RTR_Data;
-	switch (can_cmd)
-	{
-    //CMD_List.EraseFlash，擦除Flash中的数据，起始地址存储在Data[0]到Data[3]中，结束地址存储在Data[4]到Data[7]中
-    //该命令必须在Bootloader程序中实现，在APP程序中可以不用实现
-		case 0x03:
-			TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdFaild;	
-			TxMessage.DLC = 0;
-			CAN_WriteData(CANx,&TxMessage);
-			break;
-    //CMD_List.SetBaudRate，设置节点波特率，具体波特率信息存储在Data[0]到Data[3]中
-    //更改波特率后，适配器也需要更改为相同的波特率，否则不能正常通信
-		case 0x04:
-			BaudRate = (pRxMessage->Data[0]<<24)|(pRxMessage->Data[1]<<16)|(pRxMessage->Data[2]<<8)|(pRxMessage->Data[3]<<0);
-			CAN_Configuration(CANx,BaudRate);
-			if(can_addr != 0x00){
-				TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.SetBaudRate;	
-				TxMessage.DLC = 0;
-				BOOT_DelayMs(20);
-				CAN_WriteData(CANx,&TxMessage);
-			}
-			break;
-    //CMD_List.BlockWriteInfo，设置写Flash数据的相关信息，比如数据起始地址，数据大小
-    //数据起始地址存储在Data[0]到Data[3]中，数据大小存储在Data[4]到Data[7]中，该函数必须在Bootloader程序中实现，APP程序可以不用实现
-		case 0x05:
-			TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdFaild;	
-			TxMessage.DLC = 0;
-			CAN_WriteData(CANx,&TxMessage);
-			break;
-    //CMD_List.WriteBlockFlash，先将数据存储在本地缓冲区中，然后计算数据的CRC，若校验正确则写数据到Flash中
-    //每次执行该数据，数据缓冲区的数据字节数会增加pRxMessage->DLC字节，当数据量达到data_size（包含2字节CRC校验码）字节后
-    //对数据进行CRC校验，若数据校验无误，则将数据写入Flash中
-    //该函数在Bootloader程序中必须实现，APP程序可以不用实现
-		case 0x06:
-			TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdFaild;
-			TxMessage.DLC = 0;
-			CAN_WriteData(CANx,&TxMessage);
-			break;
-    //CMD_List.OnlineCheck，节点在线检测
-    //节点收到该命令后返回固件版本信息和固件类型，该命令在Bootloader程序和APP程序都必须实现
-		case 0x01:
-			if(can_addr != 0x00){
-				TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.OnlineCheck;	
-				TxMessage.Data[0] = 0;//主版本号，两字节
-				TxMessage.Data[1] = 1;
-				TxMessage.Data[2] = 0;//次版本号，两字节
-				TxMessage.Data[3] = 1;
-				TxMessage.Data[4] = 0;
-				TxMessage.Data[5] = 0;
-				TxMessage.Data[6] = 0;
-				TxMessage.Data[7] = 1;//0：固件是Bootloader,1:固件是APP
-				TxMessage.DLC = 8;
-				CAN_WriteData(CANx,&TxMessage);
-			}
-			break;
-    //CMD_List.ExcuteApp，控制程序跳转到指定地址执行
-    //该命令在Bootloader和APP程序中都必须实现
-		case 0x09:
-			jump_addr = (pRxMessage->Data[0]<<24)|(pRxMessage->Data[1]<<16)|(pRxMessage->Data[2]<<8)|(pRxMessage->Data[3]<<0);
-			if(jump_addr == APP_START_ADDRESS){	
-				if(*((uint32_t *)EXE_APP_FLAG)!=0x12345678){
-					uint32_t addr = EXE_APP_FLAG;
-					uint32_t data = 0x12345678;
-					CAN_BOOT_ErasePage(EXE_APP_FLAG,APP_START_ADDRESS-1);
-					CAN_BOOT_ProgramDatatoFlash(addr,(uint8_t *)(&data),4);
-					FLASH_Lock();
-				}
-			}
-			if((*((uint32_t *)jump_addr)!=0xFFFFFFFF)){
-				CAN_BOOT_JumpToApplication(jump_addr);	
-			}
-			break;
-		default:
-			break;
-	}
+  CanTxMsg TxMessage;
+  uint8_t can_cmd = (pRxMessage->ExtId)&CMD_MASK;//ID的bit0~bit3位为命令码
+  uint16_t can_addr = (pRxMessage->ExtId >> CMD_WIDTH);//ID的bit4~bit15位为节点地址
+  uint32_t BaudRate;
+  uint32_t exe_type;
+  //判断接收的数据地址是否和本节点地址匹配，若不匹配则直接返回，不做任何事情
+  if((can_addr!=CAN_BOOT_GetAddrData())&&(can_addr!=0)){
+    return;
+  }
+  TxMessage.DLC = 0;
+  TxMessage.ExtId = 0;
+  TxMessage.IDE = CAN_Id_Extended;
+  TxMessage.RTR = CAN_RTR_Data;
+  
+  //CMD_List.SetBaudRate，设置节点波特率，具体波特率信息存储在Data[0]到Data[3]中
+  //更改波特率后，适配器也需要更改为相同的波特率，否则不能正常通信
+  if(can_cmd == CMD_List.SetBaudRate){
+    BaudRate = (pRxMessage->Data[0]<<24)|(pRxMessage->Data[1]<<16)|(pRxMessage->Data[2]<<8)|(pRxMessage->Data[3]<<0);
+    CAN_Configuration(BaudRate);
+    if(can_addr != 0x00){
+      TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdSuccess;
+      TxMessage.DLC = 0;
+      delay_ms(20);
+      CAN_WriteData(&TxMessage);
+    }
+    return;
+  }
+  //CMD_List.Check，节点在线检测
+  //节点收到该命令后返回固件版本信息和固件类型，该命令在Bootloader程序和APP程序都必须实现
+  if(can_cmd == CMD_List.Check){
+    if(can_addr != 0x00){
+      TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdSuccess;
+      TxMessage.Data[0] = 0;//主版本号，两字节
+      TxMessage.Data[1] = 1;
+      TxMessage.Data[2] = 0;//次版本号，两字节
+      TxMessage.Data[3] = 0;
+      TxMessage.Data[4] = (uint8_t)(FW_TYPE>>24);
+      TxMessage.Data[5] = (uint8_t)(FW_TYPE>>16);
+      TxMessage.Data[6] = (uint8_t)(FW_TYPE>>8);
+      TxMessage.Data[7] = (uint8_t)(FW_TYPE>>0);
+      TxMessage.DLC = 8;
+      CAN_WriteData(&TxMessage);
+    }
+    return;
+  }
+  //CMD_List.Excute，控制程序跳转到指定地址执行
+  //该命令在Bootloader和APP程序中都必须实现
+  if(can_cmd == CMD_List.Excute){
+    exe_type = (pRxMessage->Data[0]<<24)|(pRxMessage->Data[1]<<16)|(pRxMessage->Data[2]<<8)|(pRxMessage->Data[3]<<0);
+    if(exe_type == CAN_BL_BOOT){
+      FLASH_Unlock();
+      CAN_BOOT_ErasePage(APP_EXE_FLAG_ADDR,APP_EXE_FLAG_ADDR);//擦除写入到Flash中的APP执行标志，复位运行后，即可执行Bootloader程序
+      FLASH_Lock();
+      __set_PRIMASK(1);//关闭所有中断
+      NVIC_SystemReset();
+    }
+    return;
+  }
 }
 /*********************************END OF FILE**********************************/
 

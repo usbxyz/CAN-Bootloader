@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    can.h
+  * @file    can_driver.h
   * $Author: wdluo $
   * $Revision: 17 $
   * $Date:: 2012-07-06 11:16:48 +0800 #$
@@ -20,10 +20,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f2xx.h"
 /* Functions -----------------------------------------------------------------*/
-void CAN_Configuration(CAN_TypeDef* CANx,uint32_t BaudRate);
-uint8_t CAN_WriteData(CAN_TypeDef* CANx,CanTxMsg *TxMessage);
-void CAN_ConfigFilter(CAN_TypeDef* CANx,uint8_t FilterNumber,uint16_t can_addr);
-void BOOT_DelayMs(uint32_t ms);
+void CAN_Configuration(uint32_t BaudRate);
+uint8_t CAN_WriteData(CanTxMsg *TxMessage);
+uint16_t Read_CAN_Address(void);
 #endif /*__CAN_H */
 
 /***********************************ÎÄ¼þ½áÊø***********************************/

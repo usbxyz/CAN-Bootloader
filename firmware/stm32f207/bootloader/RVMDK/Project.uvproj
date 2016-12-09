@@ -359,7 +359,7 @@
             <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -419,6 +419,11 @@
               <FileName>stm32fxxx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\stm32fxxx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\delay.c</FilePath>
             </File>
           </Files>
         </Group>
