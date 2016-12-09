@@ -200,7 +200,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
             return;
         }
-        Sleep(100);
+        Sleep(500);
     }else{
         NodeAddr = ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),0)->text().toInt(NULL,16);
         ret = CAN_BL_NodeCheck(ui->deviceIndexComboBox->currentIndex(),
@@ -224,7 +224,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                     USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
                     return;
                 }
-                Sleep(100);
+                Sleep(500);
             }
         }else{
 #ifdef LANGUE_EN
@@ -244,7 +244,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                                 NodeAddr,
                                 &appversion,
                                 &appType,
-                                50);
+                                100);
             if(ret == CAN_SUCCESS){
                 if(appType != CAN_BL_BOOT){//当前固件不为Bootloader
 #ifdef LANGUE_EN
@@ -309,8 +309,6 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                                FirmwareData,
                                read_data_num,
                                1000);
-            qDebug()<<"ret = "<<ret;
-            qDebug()<<"i = "<<i;
             if(ret != CAN_SUCCESS){
 #ifdef LANGUE_EN
                 QMessageBox::warning(this,"Warning","Write flash faild!");
@@ -356,6 +354,26 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
         QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
 #endif
+    }
+    Sleep(50);
+    ret = CAN_BL_NodeCheck(ui->deviceIndexComboBox->currentIndex(),
+                        ui->channelIndexComboBox->currentIndex(),
+                        NodeAddr,
+                        &appversion,
+                        &appType,
+                        500);
+    if(ret == CAN_SUCCESS){
+        QString str;
+        if(appType == CAN_BL_BOOT){
+            str = "BOOT";
+        }else{
+            str = "APP";
+        }
+        ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),1)->setText(str);
+        str.sprintf("v%d.%d",(((appversion>>24)&0xFF)*10)+(appversion>>16)&0xFF,(((appversion>>8)&0xFF)*10)+appversion&0xFF);
+        ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),2)->setText(str);
+    }else{
+        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
     }
     USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
     qDebug()<<time.elapsed()/1000.0<<"s";

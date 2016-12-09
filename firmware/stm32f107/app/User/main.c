@@ -52,13 +52,13 @@ int main(void)
   To reconfigure the default setting of SystemInit() function, refer to
   system_stm32fxxx.c file
   */
-  __set_PRIMASK(0);//开启总中断
   if(*((uint32_t *)APP_EXE_FLAG_ADDR)==0xFFFFFFFF){
     __align(4) static unsigned char data[4]={0x12,0x34,0x56,0x78};
     FLASH_Unlock();
     CAN_BOOT_ProgramDatatoFlash(APP_EXE_FLAG_ADDR,data,4);
     FLASH_Lock();
   }
+   __set_PRIMASK(0);//开启总中断 
   CAN_Configuration(1000000);
   //设置读保护
 // 	if(FLASH_OB_GetRDP() != SET)

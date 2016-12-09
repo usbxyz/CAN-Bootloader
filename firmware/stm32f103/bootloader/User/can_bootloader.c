@@ -225,7 +225,7 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
       __set_PRIMASK(0);
     }
     if((data_index>=data_size)||(data_index>=1026)){
-      crc_data = crc16_ccitt(data_temp,data_size-2);
+      crc_data = crc16_ccitt(data_temp,data_size-2);//对接收到的数据做CRC校验，保证数据完整性
       if(crc_data==((data_temp[data_size-2]<<8)|(data_temp[data_size-1]))){
         __set_PRIMASK(1);
         FLASH_Unlock();
@@ -234,7 +234,12 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
         __set_PRIMASK(0);
         if(can_addr != 0x00){
           if(ret==FLASH_COMPLETE){
-            TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdSuccess;
+            crc_data = crc16_ccitt((const unsigned char*)(start_addr),data_size-2);//再次对写入Flash中的数据进行CRC校验，确保写入Flash的数据无误
+            if(crc_data!=((data_temp[data_size-2]<<8)|(data_temp[data_size-1]))){
+              TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdFaild;
+            }else{
+              TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdSuccess;
+            }
           }else{
             TxMessage.ExtId = (CAN_BOOT_GetAddrData()<<CMD_WIDTH)|CMD_List.CmdFaild;
           }
