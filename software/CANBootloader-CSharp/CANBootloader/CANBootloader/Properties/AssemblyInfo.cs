@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CANBootloader")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("USB2XXX CAN Bootloader")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("usbxyz")]
 [assembly: AssemblyProduct("CANBootloader")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]

@@ -28,17 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("");
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("");
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("");
+            System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Erase",
+            "0"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem(new string[] {
+            "WriteInfo",
+            "1"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Write",
+            "2"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Check",
+            "3"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem21 = new System.Windows.Forms.ListViewItem(new string[] {
+            "SetBaudRate",
+            "4"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem22 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Excute",
+            "5"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem23 = new System.Windows.Forms.ListViewItem(new string[] {
+            "CmdSuccess",
+            "8"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem24 = new System.Windows.Forms.ListViewItem(new string[] {
+            "CmdFaild",
+            "9"}, -1);
             this.节点列表 = new System.Windows.Forms.GroupBox();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listViewNodeList = new System.Windows.Forms.ListView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.listView2 = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listViewCmdList = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.buttonSetNewBaudRate = new System.Windows.Forms.Button();
@@ -67,6 +84,11 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.命令名称 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.命令值 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.节点列表.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -78,7 +100,7 @@
             // 
             // 节点列表
             // 
-            this.节点列表.Controls.Add(this.listView1);
+            this.节点列表.Controls.Add(this.listViewNodeList);
             this.节点列表.Dock = System.Windows.Forms.DockStyle.Fill;
             this.节点列表.Location = new System.Drawing.Point(3, 3);
             this.节点列表.Name = "节点列表";
@@ -87,18 +109,24 @@
             this.节点列表.TabStop = false;
             this.节点列表.Text = "节点列表";
             // 
-            // listView1
+            // listViewNodeList
             // 
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(3, 17);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(297, 228);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listViewNodeList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.listViewNodeList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewNodeList.FullRowSelect = true;
+            this.listViewNodeList.Location = new System.Drawing.Point(3, 17);
+            this.listViewNodeList.Name = "listViewNodeList";
+            this.listViewNodeList.Size = new System.Drawing.Size(297, 228);
+            this.listViewNodeList.TabIndex = 0;
+            this.listViewNodeList.UseCompatibleStateImageBehavior = false;
+            this.listViewNodeList.View = System.Windows.Forms.View.Details;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.listView2);
+            this.groupBox1.Controls.Add(this.listViewCmdList);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(312, 3);
             this.groupBox1.Name = "groupBox1";
@@ -107,23 +135,28 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "命令列表";
             // 
-            // listView2
+            // listViewCmdList
             // 
-            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
-            this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});
-            this.listView2.Location = new System.Drawing.Point(3, 17);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(297, 228);
-            this.listView2.TabIndex = 0;
-            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listViewCmdList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.命令名称,
+            this.命令值});
+            this.listViewCmdList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewCmdList.FullRowSelect = true;
+            this.listViewCmdList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem17,
+            listViewItem18,
+            listViewItem19,
+            listViewItem20,
+            listViewItem21,
+            listViewItem22,
+            listViewItem23,
+            listViewItem24});
+            this.listViewCmdList.Location = new System.Drawing.Point(3, 17);
+            this.listViewCmdList.Name = "listViewCmdList";
+            this.listViewCmdList.Size = new System.Drawing.Size(297, 228);
+            this.listViewCmdList.TabIndex = 0;
+            this.listViewCmdList.UseCompatibleStateImageBehavior = false;
+            this.listViewCmdList.View = System.Windows.Forms.View.Details;
             // 
             // panel1
             // 
@@ -161,6 +194,8 @@
             // 
             // buttonSetNewBaudRate
             // 
+            this.buttonSetNewBaudRate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSetNewBaudRate.Location = new System.Drawing.Point(537, 12);
             this.buttonSetNewBaudRate.Name = "buttonSetNewBaudRate";
             this.buttonSetNewBaudRate.Size = new System.Drawing.Size(75, 23);
@@ -171,6 +206,8 @@
             // 
             // buttonUpgrate
             // 
+            this.buttonUpgrate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonUpgrate.Location = new System.Drawing.Point(537, 42);
             this.buttonUpgrate.Name = "buttonUpgrate";
             this.buttonUpgrate.Size = new System.Drawing.Size(75, 23);
@@ -339,14 +376,14 @@
             // 
             this.打开文件ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_045;
             this.打开文件ToolStripMenuItem.Name = "打开文件ToolStripMenuItem";
-            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.打开文件ToolStripMenuItem.Text = "打开文件";
             // 
             // 退出ToolStripMenuItem
             // 
             this.退出ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_026;
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.退出ToolStripMenuItem.Text = "退出";
             // 
             // 操作ToolStripMenuItem
@@ -361,7 +398,7 @@
             // 
             this.扫描节点ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_086;
             this.扫描节点ToolStripMenuItem.Name = "扫描节点ToolStripMenuItem";
-            this.扫描节点ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.扫描节点ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.扫描节点ToolStripMenuItem.Text = "扫描节点";
             this.扫描节点ToolStripMenuItem.Click += new System.EventHandler(this.扫描节点ToolStripMenuItem_Click);
             // 
@@ -378,7 +415,7 @@
             // 
             this.联系我们ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_079;
             this.联系我们ToolStripMenuItem.Name = "联系我们ToolStripMenuItem";
-            this.联系我们ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.联系我们ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.联系我们ToolStripMenuItem.Text = "联系我们";
             // 
             // 关于ToolStripMenuItem
@@ -387,6 +424,7 @@
             this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
             this.关于ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.关于ToolStripMenuItem.Text = "关于软件";
+            this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -421,6 +459,31 @@
             this.panel2.Size = new System.Drawing.Size(618, 324);
             this.panel2.TabIndex = 6;
             // 
+            // 命令名称
+            // 
+            this.命令名称.Text = "命令名称";
+            this.命令名称.Width = 177;
+            // 
+            // 命令值
+            // 
+            this.命令值.Text = "命令值";
+            this.命令值.Width = 106;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "节点地址";
+            this.columnHeader1.Width = 89;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "固件类型";
+            this.columnHeader2.Width = 92;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "固件版本";
+            this.columnHeader3.Width = 81;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -449,12 +512,9 @@
         #endregion
 
         private System.Windows.Forms.GroupBox 节点列表;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView listViewNodeList;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ListView listView2;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ListView listViewCmdList;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ComboBox comboBoxCANIndex;
         private System.Windows.Forms.Label label2;
@@ -483,6 +543,11 @@
         private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 联系我们ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader 命令名称;
+        private System.Windows.Forms.ColumnHeader 命令值;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }
 
