@@ -109,7 +109,7 @@
             this.numericUpDownEndAddr.Size = new System.Drawing.Size(133, 21);
             this.numericUpDownEndAddr.TabIndex = 3;
             this.numericUpDownEndAddr.Value = new decimal(new int[] {
-            1,
+            300,
             0,
             0,
             0});

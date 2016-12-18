@@ -54,8 +54,13 @@
             "9"}, -1);
             this.节点列表 = new System.Windows.Forms.GroupBox();
             this.listViewNodeList = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listViewCmdList = new System.Windows.Forms.ListView();
+            this.命令名称 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.命令值 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.buttonSetNewBaudRate = new System.Windows.Forms.Button();
@@ -82,13 +87,8 @@
             this.联系我们ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.命令名称 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.命令值 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.节点列表.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -124,6 +124,21 @@
             this.listViewNodeList.UseCompatibleStateImageBehavior = false;
             this.listViewNodeList.View = System.Windows.Forms.View.Details;
             // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "节点地址";
+            this.columnHeader1.Width = 89;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "固件类型";
+            this.columnHeader2.Width = 92;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "固件版本";
+            this.columnHeader3.Width = 81;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.listViewCmdList);
@@ -157,6 +172,16 @@
             this.listViewCmdList.TabIndex = 0;
             this.listViewCmdList.UseCompatibleStateImageBehavior = false;
             this.listViewCmdList.View = System.Windows.Forms.View.Details;
+            // 
+            // 命令名称
+            // 
+            this.命令名称.Text = "命令名称";
+            this.命令名称.Width = 177;
+            // 
+            // 命令值
+            // 
+            this.命令值.Text = "命令值";
+            this.命令值.Width = 106;
             // 
             // panel1
             // 
@@ -376,15 +401,17 @@
             // 
             this.打开文件ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_045;
             this.打开文件ToolStripMenuItem.Name = "打开文件ToolStripMenuItem";
-            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.打开文件ToolStripMenuItem.Text = "打开文件";
+            this.打开文件ToolStripMenuItem.Click += new System.EventHandler(this.打开文件ToolStripMenuItem_Click);
             // 
             // 退出ToolStripMenuItem
             // 
             this.退出ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_026;
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.退出ToolStripMenuItem.Text = "退出";
+            this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
             // 操作ToolStripMenuItem
             // 
@@ -415,14 +442,15 @@
             // 
             this.联系我们ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_079;
             this.联系我们ToolStripMenuItem.Name = "联系我们ToolStripMenuItem";
-            this.联系我们ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.联系我们ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.联系我们ToolStripMenuItem.Text = "联系我们";
+            this.联系我们ToolStripMenuItem.Click += new System.EventHandler(this.联系我们ToolStripMenuItem_Click);
             // 
             // 关于ToolStripMenuItem
             // 
             this.关于ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_052;
             this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.关于ToolStripMenuItem.Text = "关于软件";
             this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
             // 
@@ -441,13 +469,13 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(618, 254);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
-            // statusStrip1
+            // statusStrip
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 349);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(618, 22);
-            this.statusStrip1.TabIndex = 5;
-            this.statusStrip1.Text = "statusStrip1";
+            this.statusStrip.Location = new System.Drawing.Point(0, 349);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(618, 22);
+            this.statusStrip.TabIndex = 5;
+            this.statusStrip.Text = "statusStrip1";
             // 
             // panel2
             // 
@@ -459,38 +487,13 @@
             this.panel2.Size = new System.Drawing.Size(618, 324);
             this.panel2.TabIndex = 6;
             // 
-            // 命令名称
-            // 
-            this.命令名称.Text = "命令名称";
-            this.命令名称.Width = 177;
-            // 
-            // 命令值
-            // 
-            this.命令值.Text = "命令值";
-            this.命令值.Width = 106;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "节点地址";
-            this.columnHeader1.Width = 89;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "固件类型";
-            this.columnHeader2.Width = 92;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "固件版本";
-            this.columnHeader3.Width = 81;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 371);
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "FormMain";
@@ -532,7 +535,7 @@
         private System.Windows.Forms.Button buttonUpgrate;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;

@@ -23,7 +23,6 @@ public:
     ~MainWindow();
     int CAN_GetBaudRateNum(unsigned int BaudRate);
     bool DeviceConfig(void);
-    uint16_t crc16_ccitt(const uint8_t *buf, uint32_t len);
     //定义CAN波特率参数表
     typedef struct _CAN_BAUD_RATE{
       unsigned char   SJW;
