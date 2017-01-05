@@ -324,7 +324,7 @@ namespace CANBootloader
                             string AppTypeStr;
                             if (appType[0] == USB2CAN.CAN_BL_BOOT)
                             {
-                                AppTypeStr = "ROOT";
+                                AppTypeStr = "BOOT";
                             }
                             else
                             {
