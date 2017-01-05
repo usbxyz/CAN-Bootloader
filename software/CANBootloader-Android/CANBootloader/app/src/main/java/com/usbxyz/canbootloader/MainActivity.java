@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE };
     private static final int REQUEST_GET_FIRMWARE_FILE = 1;
     private static final int REQUEST_GET_CAN_NODE = 2;
     USB2XXX usb2xxx;
     Spinner baudRate,newBaudRate;
-    Button selectCANNode,selectFirmwareFile,upgradeCANNodeFirmware;
+    Button selectCANNode,selectFirmwareFile,upgradeCANNodeFirmware,setNewBaudRate;
     EditText startAddr,endAddr,firmwareFile,nodeAddr;
     TextView upgrateStatus;
     CheckBox selectAllNode;
@@ -194,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //循环发送数据
                     int AddrOffset = 0;
-                    int PackSize = 1024;
+                    int PackSize = 512;
                     byte[] DataBuffer = new byte[PackSize];
                     for (AddrOffset = 0; AddrOffset < FirmwareFileSize; AddrOffset += PackSize) {
                         int read_data_num = (AddrOffset+PackSize)>FirmwareFileSize?FirmwareFileSize%PackSize:PackSize;
@@ -260,6 +264,52 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        setNewBaudRate = (Button)findViewById(R.id.buttonSetNewBaudRate);
+        setNewBaudRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                short NodeAddr;
+                //初始化配置设备
+                if (!configUSB2CANDevice(0, (byte) 0, Integer.parseInt(baudRate.getSelectedItem().toString().substring(0, baudRate.getSelectedItem().toString().length() - 5))*1000)) {
+                    return;
+                }
+                //判断当前所选择的节点
+                if (selectAllNode.isChecked()) {
+                    NodeAddr = 0;
+                } else {
+                    if (nodeAddr.getText().toString().isEmpty()) {
+                        //没有选择任何节点
+                        Toast.makeText(MainActivity.this, "请先选择节点！", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        NodeAddr = (short) Integer.parseInt(nodeAddr.getText().toString());
+                    }
+                }
+                //
+                USB2CAN.CAN_INIT_CONFIG CAN_InitConfig = usb2xxx.usb2can. new CAN_INIT_CONFIG();
+                int newBaudRateValue = Integer.parseInt(newBaudRate.getSelectedItem().toString().substring(0, newBaudRate.getSelectedItem().toString().length() - 5))*1000;
+                CANBaudRate mCANBaudRate = new CANBaudRate();
+                CAN_InitConfig.CAN_BRP = mCANBaudRate.CANBaudRateTab[mCANBaudRate.GetBaudRateIndex(newBaudRateValue)].PreScale;
+                CAN_InitConfig.CAN_SJW = mCANBaudRate.CANBaudRateTab[mCANBaudRate.GetBaudRateIndex(newBaudRateValue)].SJW;
+                CAN_InitConfig.CAN_BS1 = mCANBaudRate.CANBaudRateTab[mCANBaudRate.GetBaudRateIndex(newBaudRateValue)].BS1;
+                CAN_InitConfig.CAN_BS2 = mCANBaudRate.CANBaudRateTab[mCANBaudRate.GetBaudRateIndex(newBaudRateValue)].BS2;
+                int ret = usb2xxx.usb2can.CAN_BL_SetNewBaudRate(0, (byte)0, NodeAddr, CAN_InitConfig, newBaudRateValue, 100);
+                if (ret != USB2CAN.CAN_SUCCESS) {
+                    Toast.makeText(MainActivity.this, "设置新波特率失败！", Toast.LENGTH_SHORT).show();
+                } else {
+                    SpinnerAdapter apsAdapter= baudRate.getAdapter();
+                    int k= apsAdapter.getCount();
+                    for(int i=0;i<k;i++){
+                        if(newBaudRate.getSelectedItem().toString().equals(apsAdapter.getItem(i).toString())){
+                            baudRate.setSelection(i,true);
+                            break;
+                        }
+                    }
+                    upgrateStatus.setText("设置新波特率成功！");
+                }
+            }
+        });
     }
     private boolean configUSB2CANDevice(int DevIndex,byte CANIndex,int BaudRate) {
         int ret;
@@ -298,11 +348,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-    // Storage Permissions
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-    Manifest.permission.READ_EXTERNAL_STORAGE,
-    Manifest.permission.WRITE_EXTERNAL_STORAGE };
+
     /**
      * Checks if the app has permission to write to device storage
      *
@@ -312,16 +358,14 @@ public class MainActivity extends AppCompatActivity {
      * @param activity
      */
     public static void verifyStoragePermissions(Activity activity) {
-    // Check if we have write permission
-     int permission = ActivityCompat.checkSelfPermission(activity,
-              Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-             if (permission != PackageManager.PERMISSION_GRANTED) {
-                        // We don't have permission so prompt the user
-                    ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
-                                      REQUEST_EXTERNAL_STORAGE);
-                  }
+        // Check if we have write permission
+         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+         if (permission != PackageManager.PERMISSION_GRANTED) {
+             // We don't have permission so prompt the user
+             ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+             REQUEST_EXTERNAL_STORAGE);
          }
+    }
     private void showFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
