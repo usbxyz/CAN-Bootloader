@@ -476,14 +476,14 @@ void MainWindow::on_contactUsAction_triggered()
 #ifndef LANG_EN
     AboutStr.append(("官方网站<span style=\"font-size:12px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>：<a href=\"http://www.usbxyz.com\">www.usbxyz.com</a><br>"));
     AboutStr.append(("官方论坛<span style=\"font-size:12px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>：<a href=\"http://www.embed-net.com\">www.embed-net.com</a><br>"));
-    AboutStr.append(("官方淘宝店<span style=\"font-size:9px;\">&nbsp;&nbsp;&nbsp;</span>：<a href=\"http://usbxyz.taobao.com/\">usbxyz.taobao.com</a><br>"));
+    AboutStr.append(("官方淘宝店<span style=\"font-size:9px;\">&nbsp;&nbsp;&nbsp;</span>：<a href=\"http://usb2xxx.taobao.com/\">usb2xxx.taobao.com</a><br>"));
     AboutStr.append(("技术支持QQ：188298598<br>"));
     AboutStr.append(("产品咨询QQ：188298598"));
     QMessageBox::about(this,("联系我们"),AboutStr);
 #else
     AboutStr.append("Official website<span style=\"font-size:12px;\">&nbsp;</span>:&nbsp;<a href=\"http://www.usbxyz.com\">www.usbxyz.com</a><br>");
     AboutStr.append("Official BBS<span style=\"font-size:12px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>:&nbsp;<a href=\"http://www.embed-net.com\">www.embed-net.com</a><br>");
-    AboutStr.append("Official Taobao<span style=\"font-size: 9px;\">&nbsp;</span>:&nbsp;<a href=\"http://usbxyz.taobao.com/\">usbxyz.taobao.com</a><br>");
+    AboutStr.append("Official Taobao<span style=\"font-size: 9px;\">&nbsp;</span>:&nbsp;<a href=\"http://usb2xxx.taobao.com/\">usb2xxx.taobao.com</a><br>");
     AboutStr.append("Technical Suuport QQ&nbsp;:&nbsp;188298598<br>");
     AboutStr.append("Product Consultant QQ&nbsp;:&nbsp;188298598");
     QMessageBox::about(this,"Contact Us",AboutStr);
@@ -496,11 +496,11 @@ void MainWindow::on_aboutAction_triggered()
     AboutStr.append("USB2XXX USB2CAN Bootloader 1.0.1<br>");
 #ifndef LANG_EN
     AboutStr.append(("支持硬件：USB2XXX<br>"));
-    AboutStr.append(("购买地址：<a href=\"http://usbxyz.taobao.com/\">usbxyz.taobao.com</a>"));
+    AboutStr.append(("购买地址：<a href=\"http://usb2xxx.taobao.com/\">usb2xxx.taobao.com</a>"));
     QMessageBox::about(this,("关于USB2XXX USB2CAN Bootloader"),AboutStr);
 #else
     AboutStr.append("Hardware Suuport: USB2XXX<br>");
-    AboutStr.append(("Purchase URL:<a href=\"http://usbxyz.taobao.com/\">usbxyz.taobao.com</a>"));
+    AboutStr.append(("Purchase URL:<a href=\"http://usb2xxx.taobao.com/\">usb2xxx.taobao.com</a>"));
     QMessageBox::about(this,"About USB2XXX USB2CAN Bootloader",AboutStr);
 #endif
 }
