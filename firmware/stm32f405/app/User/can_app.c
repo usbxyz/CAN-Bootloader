@@ -250,7 +250,7 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
       TxMessage.Data[0] = 0;//主版本号，两字节
       TxMessage.Data[1] = 1;
       TxMessage.Data[2] = 0;//次版本号，两字节
-      TxMessage.Data[3] = 0;
+      TxMessage.Data[3] = 1;
       TxMessage.Data[4] = (uint8_t)(FW_TYPE>>24);
       TxMessage.Data[5] = (uint8_t)(FW_TYPE>>16);
       TxMessage.Data[6] = (uint8_t)(FW_TYPE>>8);

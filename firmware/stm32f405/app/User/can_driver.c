@@ -81,6 +81,20 @@ void CAN_GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
+//  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);//使能PORTA时钟
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);//使能CAN1时钟	
+
+//  //初始化GPIO
+//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11| GPIO_Pin_12;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用功能
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+//  GPIO_Init(GPIOA, &GPIO_InitStructure);//初始化PA11,PA12
+
+//  //引脚复用映射配置
+//  GPIO_PinAFConfig(GPIOA,GPIO_PinSource11,GPIO_AF_CAN1); //GPIOA11复用为CAN1
+//  GPIO_PinAFConfig(GPIOA,GPIO_PinSource12,GPIO_AF_CAN1); //GPIOA12复用为CAN1 
 }
 /**
   * @brief  CAN接收中断配置
