@@ -29,7 +29,6 @@ OTHER_FILES += \
     ../source/ico.rc
 
 HEADERS += \
-    ../source/CANBootloader.h \
     ../source/mainwindow.h \
     ../source/usb_device.h \
     ../source/usb2can.h \
