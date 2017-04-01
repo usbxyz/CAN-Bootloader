@@ -52,7 +52,7 @@ int main(void)
   To reconfigure the default setting of SystemInit() function, refer to
   system_stm32fxxx.c file
   */
-  if(*((uint32_t *)APP_EXE_FLAG_START_ADDR)==0x78563412){
+  if(*((uint32_t *)APP_EXE_FLAG_ADDR)==0x78563412){
     CAN_BOOT_JumpToApplication(APP_START_ADDR);
   }
   delay_init(168);

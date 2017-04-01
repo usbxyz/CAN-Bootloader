@@ -4,7 +4,7 @@
   * $Author: wdluo $
   * $Revision: 447 $
   * $Date:: 2013-06-29 18:24:57 +0800 #$
-  * @brief   USBè®¾ç½®æ“ä½œç›¸å…³å‡½æ•°å’Œæ•°æ®ç±»å‹å®šä¹‰.
+  * @brief   USBÉèÖÃ²Ù×÷Ïà¹Øº¯ÊıºÍÊı¾İÀàĞÍ¶¨Òå.
   ******************************************************************************
   * @attention
   *
@@ -28,12 +28,12 @@
 
 typedef struct _DEVICE_INFO
 {
-    char    FirmwareName[32];   //å›ºä»¶åç§°å­—ç¬¦ä¸²
-    char    BuildDate[32];      //å›ºä»¶ç¼–è¯‘æ—¶é—´å­—ç¬¦ä¸²
-    int     HardwareVersion;    //ç¡¬ä»¶ç‰ˆæœ¬å·
-    int     FirmwareVersion;    //å›ºä»¶ç‰ˆæœ¬å·
-    int     SerialNumber[3];    //é€‚é…å™¨åºåˆ—å·
-    int     Functions;          //é€‚é…å™¨å½“å‰å…·å¤‡çš„åŠŸèƒ½
+    char    FirmwareName[32];   //¹Ì¼şÃû³Æ×Ö·û´®
+    char    BuildDate[32];      //¹Ì¼ş±àÒëÊ±¼ä×Ö·û´®
+    int     HardwareVersion;    //Ó²¼ş°æ±¾ºÅ
+    int     FirmwareVersion;    //¹Ì¼ş°æ±¾ºÅ
+    int     SerialNumber[3];    //ÊÊÅäÆ÷ĞòÁĞºÅ
+    int     Functions;          //ÊÊÅäÆ÷µ±Ç°¾ß±¸µÄ¹¦ÄÜ
 }DEVICE_INFO,*PDEVICE_INFO;
 
 #ifdef __cplusplus
@@ -42,61 +42,69 @@ extern "C"
 #endif
 
 /**
-  * @brief  åˆå§‹åŒ–USBè®¾å¤‡ï¼Œå¹¶æ‰«æè®¾å¤‡è¿æ¥æ•°ï¼Œå¿…é¡»è°ƒç”¨
-  * @param  pDevNum æ¯ä¸ªè®¾å¤‡çš„è®¾å¤‡å·å­˜å‚¨åœ°å€ï¼Œè‹¥ä¸éœ€è¦è®¾å¤‡å·ï¼Œå¯ä»¥ä¼ å…¥NULL
-  * @retval æ‰«æåˆ°çš„è®¾å¤‡æ•°é‡
+  * @brief  ³õÊ¼»¯USBÉè±¸£¬²¢É¨ÃèÉè±¸Á¬½ÓÊı£¬±ØĞëµ÷ÓÃ
+  * @param  pDevNum Ã¿¸öÉè±¸µÄÉè±¸ºÅ´æ´¢µØÖ·£¬Èô²»ĞèÒªÉè±¸ºÅ£¬¿ÉÒÔ´«ÈëNULL
+  * @retval É¨Ãèµ½µÄÉè±¸ÊıÁ¿
   */
-int  WINAPI USB_ScanDevice(int *pDevNum);
+int  WINAPI USB_ScanDevice(int *pDevHandle);
 
 /**
-  * @brief  æ‰“å¼€è®¾å¤‡ï¼Œå¿…é¡»è°ƒç”¨
-  * @param  DevIndex è®¾å¤‡ç´¢å¼•å·
-  * @retval æ‰“å¼€è®¾å¤‡çš„çŠ¶æ€
+  * @brief  ´ò¿ªÉè±¸£¬±ØĞëµ÷ÓÃ
+  * @param  DevHandle Éè±¸Ë÷ÒıºÅ
+  * @retval ´ò¿ªÉè±¸µÄ×´Ì¬
   */
-bool WINAPI USB_OpenDevice(int DevIndex);
+bool WINAPI USB_OpenDevice(int DevHandle);
 
 /**
-  * @brief  å…³é—­è®¾å¤‡
-  * @param  DevIndex è®¾å¤‡ç´¢å¼•å·
-  * @retval å…³é—­è®¾å¤‡çš„çŠ¶æ€
+  * @brief  ¹Ø±ÕÉè±¸
+  * @param  DevHandle Éè±¸Ë÷ÒıºÅ
+  * @retval ¹Ø±ÕÉè±¸µÄ×´Ì¬
   */
-bool WINAPI USB_CloseDevice(int DevIndex);
+bool WINAPI USB_CloseDevice(int DevHandle);
 
 /**
-  * @brief  è·å–è®¾å¤‡ä¿¡æ¯ï¼Œæ¯”å¦‚è®¾å¤‡åç§°ï¼Œå›ºä»¶ç‰ˆæœ¬å·ï¼Œè®¾å¤‡åºå·ï¼Œè®¾å¤‡åŠŸèƒ½è¯´æ˜å­—ç¬¦ä¸²ç­‰
-  * @param  DevIndex è®¾å¤‡ç´¢å¼•å·
-  * @param  pDevInfo è®¾å¤‡ä¿¡æ¯å­˜å‚¨ç»“æ„ä½“æŒ‡é’ˆ
-  * @param  pFunctionStr è®¾å¤‡åŠŸèƒ½è¯´æ˜å­—ç¬¦ä¸²
-  * @retval è·å–è®¾å¤‡ä¿¡æ¯çš„çŠ¶æ€
+  * @brief  »ñÈ¡Éè±¸ĞÅÏ¢£¬±ÈÈçÉè±¸Ãû³Æ£¬¹Ì¼ş°æ±¾ºÅ£¬Éè±¸ĞòºÅ£¬Éè±¸¹¦ÄÜËµÃ÷×Ö·û´®µÈ
+  * @param  DevHandle Éè±¸Ë÷ÒıºÅ
+  * @param  pDevInfo Éè±¸ĞÅÏ¢´æ´¢½á¹¹ÌåÖ¸Õë
+  * @param  pFunctionStr Éè±¸¹¦ÄÜËµÃ÷×Ö·û´®
+  * @retval »ñÈ¡Éè±¸ĞÅÏ¢µÄ×´Ì¬
   */
-bool WINAPI USB_GetDeviceInfo(int DevIndex,PDEVICE_INFO pDevInfo,char *pFunctionStr);
+bool WINAPI DEV_GetDeviceInfo(int DevHandle,PDEVICE_INFO pDevInfo,char *pFunctionStr);
 
 /**
-  * @brief  æ“¦å‡ºç”¨æˆ·åŒºæ•°æ®
-  * @param  DevIndex è®¾å¤‡ç´¢å¼•å·
-  * @retval ç”¨æˆ·åŒºæ•°æ®æ“¦å‡ºçŠ¶æ€
+  * @brief  ²Á³öÓÃ»§ÇøÊı¾İ
+  * @param  DevHandle Éè±¸Ë÷ÒıºÅ
+  * @retval ÓÃ»§ÇøÊı¾İ²Á³ö×´Ì¬
   */
-bool WINAPI USB_EraseUserData(int DevIndex);
+bool WINAPI DEV_EraseUserData(int DevHandle);
 
 /**
-  * @brief  å‘ç”¨æˆ·åŒºåŸŸå†™å…¥ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®ï¼Œå†™å…¥æ•°æ®ä¹‹å‰éœ€è¦è°ƒç”¨æ“¦å‡ºå‡½æ•°å°†æ•°æ®æ“¦å‡º
-  * @param  DevIndex è®¾å¤‡ç´¢å¼•å·
-  * @param  OffsetAddr æ•°æ®å†™å…¥åç§»åœ°å€ï¼Œèµ·å§‹åœ°å€ä¸º0x00ï¼Œç”¨æˆ·åŒºæ€»å®¹é‡ä¸º0x10000å­—èŠ‚ï¼Œä¹Ÿå°±æ˜¯64KBye
-  * @param  pWriteData ç”¨æˆ·æ•°æ®ç¼“å†²åŒºé¦–åœ°å€
-  * @param  DataLen å¾…å†™å…¥çš„æ•°æ®å­—èŠ‚æ•°
-  * @retval å†™å…¥ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®çŠ¶æ€
+  * @brief  ÏòÓÃ»§ÇøÓòĞ´ÈëÓÃ»§×Ô¶¨ÒåÊı¾İ£¬Ğ´ÈëÊı¾İÖ®Ç°ĞèÒªµ÷ÓÃ²Á³öº¯Êı½«Êı¾İ²Á³ö
+  * @param  DevHandle Éè±¸Ë÷ÒıºÅ
+  * @param  OffsetAddr Êı¾İĞ´ÈëÆ«ÒÆµØÖ·£¬ÆğÊ¼µØÖ·Îª0x00£¬ÓÃ»§Çø×ÜÈİÁ¿Îª0x10000×Ö½Ú£¬Ò²¾ÍÊÇ64KBye
+  * @param  pWriteData ÓÃ»§Êı¾İ»º³åÇøÊ×µØÖ·
+  * @param  DataLen ´ıĞ´ÈëµÄÊı¾İ×Ö½ÚÊı
+  * @retval Ğ´ÈëÓÃ»§×Ô¶¨ÒåÊı¾İ×´Ì¬
   */
-bool WINAPI USB_WriteUserData(int DevIndex,int OffsetAddr,unsigned char *pWriteData,int DataLen);
+bool WINAPI DEV_WriteUserData(int DevHandle,int OffsetAddr,unsigned char *pWriteData,int DataLen);
 
 /**
-  * @brief  ä»ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®åŒºè¯»å‡ºæ•°æ®
-  * @param  DevIndex è®¾å¤‡ç´¢å¼•å·
-  * @param  OffsetAddr æ•°æ®å†™å…¥åç§»åœ°å€ï¼Œèµ·å§‹åœ°å€ä¸º0x00ï¼Œç”¨æˆ·åŒºæ€»å®¹é‡ä¸º0x10000å­—èŠ‚ï¼Œä¹Ÿå°±æ˜¯64KBye
-  * @param  pReadData ç”¨æˆ·æ•°æ®ç¼“å†²åŒºé¦–åœ°å€
-  * @param  DataLen å¾…è¯»å‡ºçš„æ•°æ®å­—èŠ‚æ•°
-  * @retval è¯»å‡ºç”¨æˆ·è‡ªå®šä¹‰æ•°æ®çš„çŠ¶æ€
+  * @brief  ´ÓÓÃ»§×Ô¶¨ÒåÊı¾İÇø¶Á³öÊı¾İ
+  * @param  DevHandle Éè±¸Ë÷ÒıºÅ
+  * @param  OffsetAddr Êı¾İĞ´ÈëÆ«ÒÆµØÖ·£¬ÆğÊ¼µØÖ·Îª0x00£¬ÓÃ»§Çø×ÜÈİÁ¿Îª0x10000×Ö½Ú£¬Ò²¾ÍÊÇ64KBye
+  * @param  pReadData ÓÃ»§Êı¾İ»º³åÇøÊ×µØÖ·
+  * @param  DataLen ´ı¶Á³öµÄÊı¾İ×Ö½ÚÊı
+  * @retval ¶Á³öÓÃ»§×Ô¶¨ÒåÊı¾İµÄ×´Ì¬
   */
-bool WINAPI USB_ReadUserData(int DevIndex,int OffsetAddr,unsigned char *pReadData,int DataLen);
+bool WINAPI DEV_ReadUserData(int DevHandle,int OffsetAddr,unsigned char *pReadData,int DataLen);
+
+/**
+  * @brief  ÉèÖÃ¿É±äµçÑ¹Êä³öÒı½ÅÊä³öµçÑ¹Öµ
+  * @param  DevHandle Éè±¸Ë÷ÒıºÅ
+  * @param  PowerLevel Êä³öµçÑ¹Öµ£¬0-1.8V£¬1-3.3V
+  * @retval ÉèÖÃÊä³öµçÑ¹×´Ì¬
+  */
+bool WINAPI DEV_SetPowerLevel(int DevHandle,char PowerLevel);
 
 #ifdef __cplusplus
 }

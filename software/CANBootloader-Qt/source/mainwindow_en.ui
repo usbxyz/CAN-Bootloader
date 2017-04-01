@@ -261,7 +261,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="deviceIndexComboBox">
+                <widget class="QComboBox" name="deviceHandleComboBox">
                  <property name="minimumSize">
                   <size>
                    <width>80</width>

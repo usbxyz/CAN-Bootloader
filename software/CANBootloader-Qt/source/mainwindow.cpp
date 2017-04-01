@@ -21,12 +21,24 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->cmdListTableWidget->setRowHeight(i,20);
     }
     //qDebug << "sizeof(CANBaudRateTab) = " << sizeof(CANBaudRateTab);
+    ScanDevice();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::ScanDevice(void)
+{
+    int DevHandle[20];
+    int deviceNum = USB_ScanDevice(DevHandle);
+    ui->deviceHandleComboBox->clear();
+    for(int i=0;i<deviceNum;i++){
+        ui->deviceHandleComboBox->addItem(QString().sprintf("%08X",DevHandle[i]));
+    }
+}
+
 
 void MainWindow::on_openFirmwareFilePushButton_clicked()
 {
@@ -52,17 +64,9 @@ int MainWindow::CAN_GetBaudRateNum(unsigned int BaudRate)
 bool MainWindow::DeviceConfig(void)
 {
     int ret;
+    int DeviceHandle = ui->deviceHandleComboBox->currentText().toInt(NULL,16);
     bool state;
-    ret = USB_ScanDevice(NULL);
-    if(ret <= 0){
-#ifdef LANGUE_EN
-        QMessageBox::warning(this,"Warning","No device connected!");
-#else
-        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("无设备连接！"));
-#endif
-        return false;
-    }
-    state = USB_OpenDevice(ui->deviceIndexComboBox->currentIndex());
+    state = USB_OpenDevice(DeviceHandle);
     if(!state){
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Open device faild!");
@@ -96,7 +100,7 @@ bool MainWindow::DeviceConfig(void)
     CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
     CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
 
-    ret = CAN_BL_Init(ui->deviceIndexComboBox->currentIndex(),
+    ret = CAN_BL_Init(DeviceHandle,
                      ui->channelIndexComboBox->currentIndex(),
                      &CAN_InitConfig,
                      &CMD_List);
@@ -115,6 +119,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
     QTime time;
     time.start();
     int ret;
+    int DeviceHandle = ui->deviceHandleComboBox->currentText().toInt(NULL,16);
     bool ConfFlag;
     uint32_t appversion,appType;
     uint8_t FirmwareData[1026]={0};
@@ -144,7 +149,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
     }
     if(ui->allNodeCheckBox->isChecked()){
         NodeAddr = 0x00;
-        ret = CAN_BL_Excute(ui->deviceIndexComboBox->currentIndex(),
+        ret = CAN_BL_Excute(DeviceHandle,
                             ui->channelIndexComboBox->currentIndex(),
                             NodeAddr,
                             CAN_BL_BOOT);
@@ -154,13 +159,13 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
             QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
 #endif
-            USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+            USB_CloseDevice(DeviceHandle);
             return;
         }
         Sleep(500);
     }else{
         NodeAddr = ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),0)->text().toInt(NULL,16);
-        ret = CAN_BL_NodeCheck(ui->deviceIndexComboBox->currentIndex(),
+        ret = CAN_BL_NodeCheck(DeviceHandle,
                             ui->channelIndexComboBox->currentIndex(),
                             NodeAddr,
                             &appversion,
@@ -168,7 +173,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                             500);
         if(ret == CAN_SUCCESS){
             if(appType != CAN_BL_BOOT){//当前固件不为Bootloader
-                ret = CAN_BL_Excute(ui->deviceIndexComboBox->currentIndex(),
+                ret = CAN_BL_Excute(DeviceHandle,
                                     ui->channelIndexComboBox->currentIndex(),
                                     NodeAddr,
                                     CAN_BL_BOOT);
@@ -178,7 +183,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
                     QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
 #endif
-                    USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+                    USB_CloseDevice(DeviceHandle);
                     return;
                 }
                 Sleep(500);
@@ -189,14 +194,14 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
             QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("节点检测失败！"));
 #endif
-            USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+            USB_CloseDevice(DeviceHandle);
             return;
         }
     }
     QFile firmwareFile(ui->firmwareLineEdit->text());
     if (firmwareFile.open(QFile::ReadOnly)){
         if(!ui->allNodeCheckBox->isChecked()){
-            ret = CAN_BL_NodeCheck(ui->deviceIndexComboBox->currentIndex(),
+            ret = CAN_BL_NodeCheck(DeviceHandle,
                                 ui->channelIndexComboBox->currentIndex(),
                                 NodeAddr,
                                 &appversion,
@@ -209,7 +214,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
                     QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("当前固件不为Bootloader固件！"));
 #endif
-                    USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+                    USB_CloseDevice(DeviceHandle);
                     return;
                 }
             }else{
@@ -218,11 +223,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
                 QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("节点检测失败！"));
 #endif
-                USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+                USB_CloseDevice(DeviceHandle);
                 return;
             }
         }
-        ret = CAN_BL_Erase(ui->deviceIndexComboBox->currentIndex(),
+        ret = CAN_BL_Erase(DeviceHandle,
                            ui->channelIndexComboBox->currentIndex(),
                            NodeAddr,
                            firmwareFile.size(),
@@ -234,7 +239,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
             QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("擦出Flash失败！"));
 #endif
-            USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+            USB_CloseDevice(DeviceHandle);
             return;
         }
         if(ui->allNodeCheckBox->isChecked()){
@@ -255,7 +260,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
         int PackSize = 512;
         for(i=0;i<firmwareFile.size();i+=PackSize){
             read_data_num = firmwareFile.read((char*)FirmwareData,PackSize);
-            ret = CAN_BL_Write(ui->deviceIndexComboBox->currentIndex(),
+            ret = CAN_BL_Write(DeviceHandle,
                                ui->channelIndexComboBox->currentIndex(),
                                NodeAddr,
                                i,
@@ -268,13 +273,13 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #else
                 QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("写Flash数据失败！"));
 #endif
-                USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+                USB_CloseDevice(DeviceHandle);
                 return;
             }
             writeDataProcess.setValue(i);
             QCoreApplication::processEvents(QEventLoop::AllEvents);
             if(writeDataProcess.wasCanceled()){
-                USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+                USB_CloseDevice(DeviceHandle);
                 return;
             }
             if(ui->allNodeCheckBox->isChecked()){
@@ -284,11 +289,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
         writeDataProcess.setValue(firmwareFile.size());
         QCoreApplication::processEvents(QEventLoop::AllEvents);
         if(writeDataProcess.wasCanceled()){
-            USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+            USB_CloseDevice(DeviceHandle);
             return;
         }
     }else{
-        USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+        USB_CloseDevice(DeviceHandle);
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Open firmware file faild!");
 #else
@@ -297,7 +302,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
         return;
     }
     //执行固件
-    ret = CAN_BL_Excute(ui->deviceIndexComboBox->currentIndex(),
+    ret = CAN_BL_Excute(DeviceHandle,
                         ui->channelIndexComboBox->currentIndex(),
                         NodeAddr,
                         CAN_BL_APP);
@@ -310,7 +315,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
     }
     Sleep(50);
     if(!ui->allNodeCheckBox->isChecked()){
-        ret = CAN_BL_NodeCheck(ui->deviceIndexComboBox->currentIndex(),
+        ret = CAN_BL_NodeCheck(DeviceHandle,
                             ui->channelIndexComboBox->currentIndex(),
                             NodeAddr,
                             &appversion,
@@ -330,7 +335,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
         }
     }
-    USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+    USB_CloseDevice(DeviceHandle);
     qDebug()<<time.elapsed()/1000.0<<"s";
 }
 
@@ -342,6 +347,7 @@ void MainWindow::on_openFirmwareFileAction_triggered()
 void MainWindow::on_scanNodeAction_triggered()
 {
     int ret;
+    int DeviceHandle = ui->deviceHandleComboBox->currentText().toInt(NULL,16);
     int startAddr = 0,endAddr = 0;
     ScanDevRangeDialog *pScanDevRangeDialog = new ScanDevRangeDialog();
     if(pScanDevRangeDialog->exec() == QDialog::Accepted){
@@ -352,7 +358,7 @@ void MainWindow::on_scanNodeAction_triggered()
     }
     bool ConfFlag = DeviceConfig();
     if(!ConfFlag){
-        USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+        USB_CloseDevice(DeviceHandle);
         return;
     }
     ui->nodeListTableWidget->verticalHeader()->hide();
@@ -373,7 +379,7 @@ void MainWindow::on_scanNodeAction_triggered()
     while(startAddr <= endAddr){
         uint32_t appversion,appType;
         i++;
-        ret = CAN_BL_NodeCheck(ui->deviceIndexComboBox->currentIndex(),
+        ret = CAN_BL_NodeCheck(DeviceHandle,
                             ui->channelIndexComboBox->currentIndex(),
                             startAddr,
                             &appversion,
@@ -400,12 +406,12 @@ void MainWindow::on_scanNodeAction_triggered()
         scanNodeProcess.setValue(i);
         QCoreApplication::processEvents(QEventLoop::AllEvents);
         if(scanNodeProcess.wasCanceled()){
-            USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+            USB_CloseDevice(DeviceHandle);
             return;
         }
         startAddr++;
     }
-    USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+    USB_CloseDevice(DeviceHandle);
 }
 
 
@@ -413,6 +419,7 @@ void MainWindow::on_scanNodeAction_triggered()
 void MainWindow::on_setbaudRatePushButton_clicked()
 {
     int ret;
+    int DeviceHandle = ui->deviceHandleComboBox->currentText().toInt(NULL,16);
     CAN_INIT_CONFIG CAN_InitConfig;
     if(ui->allNodeCheckBox->isChecked()){
         if(ui->nodeListTableWidget->rowCount()<=0){
@@ -435,7 +442,7 @@ void MainWindow::on_setbaudRatePushButton_clicked()
     }
     bool ConfFlag = DeviceConfig();
     if(!ConfFlag){
-        USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+        USB_CloseDevice(DeviceHandle);
         return;
     }
     QString str = ui->newBaudRateComboBox->currentText();
@@ -451,14 +458,14 @@ void MainWindow::on_setbaudRatePushButton_clicked()
     }else{
         NodeAddr = ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),0)->text().toInt(NULL,16);
     }
-    ret = CAN_BL_SetNewBaudRate(ui->deviceIndexComboBox->currentIndex(),
+    ret = CAN_BL_SetNewBaudRate(DeviceHandle,
                                 ui->channelIndexComboBox->currentIndex(),
                                 NodeAddr,
                                 &CAN_InitConfig,
                                 baud,
                                 100);
     if(ret != CAN_SUCCESS){
-        USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+        USB_CloseDevice(DeviceHandle);
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Set baud rate faild!");
 #else
@@ -467,7 +474,7 @@ void MainWindow::on_setbaudRatePushButton_clicked()
         return;
     }
     ui->baudRateComboBox->setCurrentIndex(ui->newBaudRateComboBox->currentIndex());
-    USB_CloseDevice(ui->deviceIndexComboBox->currentIndex());
+    USB_CloseDevice(DeviceHandle);
 }
 
 void MainWindow::on_contactUsAction_triggered()
@@ -493,7 +500,7 @@ void MainWindow::on_contactUsAction_triggered()
 void MainWindow::on_aboutAction_triggered()
 {
     QString AboutStr;
-    AboutStr.append("USB2XXX USB2CAN Bootloader 1.0.1<br>");
+    AboutStr.append("USB2XXX USB2CAN Bootloader 1.0.2<br>");
 #ifndef LANG_EN
     AboutStr.append(("支持硬件：USB2XXX<br>"));
     AboutStr.append(("购买地址：<a href=\"http://usb2xxx.taobao.com/\">usb2xxx.taobao.com</a>"));

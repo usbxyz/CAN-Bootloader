@@ -28,6 +28,7 @@
 
 #define APP_EXE_FLAG_START_ADDR    ((uint32_t)0x08004000)
 #define APP_START_ADDR             ((uint32_t)0x08008000)
+#define APP_EXE_FLAG_ADDR          ((uint32_t)0x08007800)
 #define CAN_BL_BOOT     0x55555555
 #define CAN_BL_APP      0xAAAAAAAA
 #define FW_TYPE         CAN_BL_BOOT

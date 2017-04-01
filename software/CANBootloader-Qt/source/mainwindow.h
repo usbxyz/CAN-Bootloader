@@ -22,6 +22,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     int CAN_GetBaudRateNum(unsigned int BaudRate);
+    void ScanDevice(void);
     bool DeviceConfig(void);
     //定义CAN波特率参数表
     typedef struct _CAN_BAUD_RATE{
