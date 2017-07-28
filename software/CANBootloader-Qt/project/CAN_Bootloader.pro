@@ -11,9 +11,18 @@ TEMPLATE = app
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-win32:LIBS += -L$$PWD/lib/win32/ -lUSB2XXX
+win32{
+    LIBS += -L$$PWD/lib/win32/ -lUSB2XXX
+}else{
+    unix:contains(QMAKE_HOST.arch, x86_64){
+        LIBS += -L$$PWD/lib/linux64/ -lUSB2XXX
+    }else{
+        LIBS += -L$$PWD/lib/linux32/ -lUSB2XXX
+    }
+}
+!win32: DEFINES += OS_UNIX
 
-//DEFINES += LANGUE_EN
+#DEFINES += LANGUE_EN
 
 RESOURCES += \
     ../source/image.qrc

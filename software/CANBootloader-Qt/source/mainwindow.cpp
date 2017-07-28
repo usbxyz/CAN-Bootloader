@@ -162,7 +162,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             USB_CloseDevice(DeviceHandle);
             return;
         }
+#ifndef OS_UNIX
         Sleep(500);
+#else
+        usleep(500*1000);
+#endif
     }else{
         NodeAddr = ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),0)->text().toInt(NULL,16);
         ret = CAN_BL_NodeCheck(DeviceHandle,
@@ -186,7 +190,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                     USB_CloseDevice(DeviceHandle);
                     return;
                 }
+#ifndef OS_UNIX
                 Sleep(500);
+#else
+                usleep(500*1000);
+#endif
             }
         }else{
 #ifdef LANGUE_EN
@@ -243,7 +251,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             return;
         }
         if(ui->allNodeCheckBox->isChecked()){
-            Sleep(1000);
+#ifndef OS_UNIX
+            Sleep(500);
+#else
+            usleep(500*1000);
+#endif
         }
         int read_data_num;
 #ifdef LANGUE_EN
@@ -283,7 +295,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                 return;
             }
             if(ui->allNodeCheckBox->isChecked()){
+#ifndef OS_UNIX
                 Sleep(10);
+#else
+                usleep(10*1000);
+#endif
             }
         }
         writeDataProcess.setValue(firmwareFile.size());
@@ -313,7 +329,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
         QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
 #endif
     }
+#ifndef OS_UNIX
     Sleep(50);
+#else
+    usleep(50*1000);
+#endif
     if(!ui->allNodeCheckBox->isChecked()){
         ret = CAN_BL_NodeCheck(DeviceHandle,
                             ui->channelIndexComboBox->currentIndex(),
