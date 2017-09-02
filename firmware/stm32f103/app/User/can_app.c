@@ -196,7 +196,7 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
     exe_type = (pRxMessage->Data[0]<<24)|(pRxMessage->Data[1]<<16)|(pRxMessage->Data[2]<<8)|(pRxMessage->Data[3]<<0);
     if(exe_type == CAN_BL_BOOT){
       FLASH_Unlock();
-      CAN_BOOT_ErasePage(APP_EXE_FLAG_ADDR,APP_EXE_FLAG_ADDR);//擦除写入到Flash中的APP执行标志，复位运行后，即可执行Bootloader程序
+      CAN_BOOT_ErasePage(APP_EXE_FLAG_START_ADDR,APP_EXE_FLAG_START_ADDR);//擦除写入到Flash中的APP执行标志，复位运行后，即可执行Bootloader程序
       FLASH_Lock();
       __set_PRIMASK(1);//关闭所有中断
       NVIC_SystemReset();
