@@ -239,13 +239,13 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                            ui->channelIndexComboBox->currentIndex(),
                            NodeAddr,
                            firmwareFile.size(),
-                           1000);
+                           3000);
         if(ret != CAN_SUCCESS){
             qDebug()<<"CBL_EraseFlash = "<<ret;
 #ifdef LANGUE_EN
             QMessageBox::warning(this,"Warning","Erase flash faild!");
 #else
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("擦出Flash失败！"));
+            QMessageBox::warning(this,"警告",QString().sprintf("擦出Flash失败！%d",ret));
 #endif
             USB_CloseDevice(DeviceHandle);
             return;
