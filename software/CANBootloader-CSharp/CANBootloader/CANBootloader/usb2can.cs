@@ -87,29 +87,29 @@ namespace USB2XXX
         public const Int32 CAN_BL_ERR_CMD          = (-23); //执行命令失败
         //USB2CAN相关函数定义
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_Init(Int32 DevIndex, Byte CANIndex, ref CAN_INIT_CONFIG pCanConfig);
+        public static extern Int32 CAN_Init(Int32 DevHandle, Byte CANIndex, ref CAN_INIT_CONFIG pCanConfig);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_Filter_Init(Int32 DevIndex, Byte CANIndex, ref CAN_FILTER_CONFIG pFilterConfig);
+        public static extern Int32 CAN_Filter_Init(Int32 DevHandle, Byte CANIndex, ref CAN_FILTER_CONFIG pFilterConfig);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_SendMsg(Int32 DevIndex, Byte CANIndex, ref CAN_MSG pCanSendMsg,UInt32 SendMsgNum);
+        public static extern Int32 CAN_SendMsg(Int32 DevHandle, Byte CANIndex, ref CAN_MSG pCanSendMsg,UInt32 SendMsgNum);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_GetMsg(Int32 DevIndex, Byte CANIndex, ref CAN_MSG pCanGetMsg);
+        public static extern Int32 CAN_GetMsg(Int32 DevHandle, Byte CANIndex, ref CAN_MSG pCanGetMsg);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_GetStatus(Int32 DevIndex, Byte CANIndex, ref CAN_STATUS pCANStatus);
+        public static extern Int32 CAN_GetStatus(Int32 DevHandle, Byte CANIndex, ref CAN_STATUS pCANStatus);
 
         //CAN Bootloader相关函数
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_BL_Init(Int32 DevIndex,Int32 CANIndex,ref CAN_INIT_CONFIG pInitConfig,ref CBL_CMD_LIST pCmdList);
+        public static extern Int32 CAN_BL_Init(Int32 DevHandle,Int32 CANIndex,ref CAN_INIT_CONFIG pInitConfig,ref CBL_CMD_LIST pCmdList);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_BL_NodeCheck(Int32 DevIndex, Int32 CANIndex, UInt16 NodeAddr, UInt32[] pVersion, UInt32[] pType, UInt32 TimeOut);
+        public static extern Int32 CAN_BL_NodeCheck(Int32 DevHandle, Int32 CANIndex, UInt16 NodeAddr, UInt32[] pVersion, UInt32[] pType, UInt32 TimeOut);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_BL_Erase(Int32 DevIndex,Int32 CANIndex,UInt16 NodeAddr,UInt32 FlashSize,UInt32 TimeOut);
+        public static extern Int32 CAN_BL_Erase(Int32 DevHandle,Int32 CANIndex,UInt16 NodeAddr,UInt32 FlashSize,UInt32 TimeOut);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_BL_Write(Int32 DevIndex,Int32 CANIndex,UInt16 NodeAddr,UInt32 AddrOffset,Byte[] pData,UInt32 DataNum,UInt32 TimeOut);
+        public static extern Int32 CAN_BL_Write(Int32 DevHandle,Int32 CANIndex,UInt16 NodeAddr,UInt32 AddrOffset,Byte[] pData,UInt32 DataNum,UInt32 TimeOut);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_BL_Excute(Int32 DevIndex,Int32 CANIndex,UInt16 NodeAddr,UInt32 Type);
+        public static extern Int32 CAN_BL_Excute(Int32 DevHandle,Int32 CANIndex,UInt16 NodeAddr,UInt32 Type);
         [DllImport("USB2XXX.dll")]
-        public static extern Int32 CAN_BL_SetNewBaudRate(Int32 DevIndex, Int32 CANIndex, UInt16 NodeAddr, ref CAN_INIT_CONFIG pInitConfig, UInt32 NewBaudRate, UInt32 TimeOut);
+        public static extern Int32 CAN_BL_SetNewBaudRate(Int32 DevHandle, Int32 CANIndex, UInt16 NodeAddr, ref CAN_INIT_CONFIG pInitConfig, UInt32 NewBaudRate, UInt32 TimeOut);
 
     }
 }

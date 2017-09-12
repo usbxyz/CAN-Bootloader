@@ -63,7 +63,7 @@ namespace CANBootloader
         short ScanStartAddr = 0, ScanEndAddr = 0;
         int DeviceIndex = 0;
         int CANIndex = 0;
-
+        Int32[] DevHandles = new Int32[20];
 
         public FormMain()
         {
@@ -105,14 +105,14 @@ namespace CANBootloader
             DeviceIndex = this.comboBoxDeviceIndex.SelectedIndex;
             CANIndex = this.comboBoxCANIndex.SelectedIndex;
             //扫描查找设备
-            DevNum = usb_device.USB_ScanDevice(null);
+            DevNum = usb_device.USB_ScanDevice(DevHandles);
             if (DevNum <= 0)
             {
                 MessageBox.Show(this, "无设备连接！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             //打开设备
-            state = usb_device.USB_OpenDevice(DeviceIndex);
+            state = usb_device.USB_OpenDevice(DevHandles[DeviceIndex]);
             if (!state)
             {
                 MessageBox.Show(this, "打开设备失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -145,7 +145,7 @@ namespace CANBootloader
             CAN_InitConfig.CAN_BS1 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS1;
             CAN_InitConfig.CAN_BS2 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS2;
 
-            ret = USB2CAN.CAN_BL_Init(DeviceIndex, CANIndex, ref CAN_InitConfig, ref CMD_List);
+            ret = USB2CAN.CAN_BL_Init(DevHandles[DeviceIndex], CANIndex, ref CAN_InitConfig, ref CMD_List);
             if(ret!=USB2CAN.CAN_SUCCESS)
             {
                 MessageBox.Show(this, "初始化设备失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -243,7 +243,7 @@ namespace CANBootloader
                     //MessageBox.Show(this, "NodeAddr = " + NodeAddr, "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     //发送跳转到Bootloader的命令
                     sender.SetProgress(0, "跳转到Bootloader...");
-                    ret = USB2CAN.CAN_BL_Excute(DeviceIndex,CANIndex,NodeAddr,USB2CAN.CAN_BL_BOOT);
+                    ret = USB2CAN.CAN_BL_Excute(DevHandles[DeviceIndex], CANIndex, NodeAddr, USB2CAN.CAN_BL_BOOT);
                     if (ret != USB2CAN.CAN_SUCCESS)
                     {
                         MessageBox.Show(this, "执行固件跳转命令失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -257,7 +257,7 @@ namespace CANBootloader
                     if (!this.checkBoxAllNode.Checked)
                     {
                         UInt32[] appVersion = new UInt32[1], appType = new UInt32[1];
-                        ret = USB2CAN.CAN_BL_NodeCheck(DeviceIndex, CANIndex, NodeAddr, appVersion, appType, 10);
+                        ret = USB2CAN.CAN_BL_NodeCheck(DevHandles[DeviceIndex], CANIndex, NodeAddr, appVersion, appType, 10);
                         if (ret != USB2CAN.CAN_SUCCESS)
                         {
                             MessageBox.Show(this, "节点检测失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -276,7 +276,7 @@ namespace CANBootloader
                     }
                     //发送擦出固件命令
                     sender.SetProgress(0, "擦出固件...");
-                    ret = USB2CAN.CAN_BL_Erase(DeviceIndex, CANIndex, NodeAddr,(UInt32)FirmwareFileSize,10000);
+                    ret = USB2CAN.CAN_BL_Erase(DevHandles[DeviceIndex], CANIndex, NodeAddr, (UInt32)FirmwareFileSize, 10000);
                     if(ret != USB2CAN.CAN_SUCCESS){
                         MessageBox.Show(this, "擦出固件失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         br.Close();
@@ -293,7 +293,7 @@ namespace CANBootloader
                     for (AddrOffset = 0; AddrOffset < FirmwareFileSize; AddrOffset += PackSize)
                     {
                         UInt32 read_data_num = (UInt32)br.Read(DataBuffer, 0, (int)PackSize);
-                        ret = USB2CAN.CAN_BL_Write(DeviceIndex, CANIndex, NodeAddr, AddrOffset, DataBuffer, read_data_num, 1000);
+                        ret = USB2CAN.CAN_BL_Write(DevHandles[DeviceIndex], CANIndex, NodeAddr, AddrOffset, DataBuffer, read_data_num, 1000);
                         if(ret != USB2CAN.CAN_SUCCESS){
                             MessageBox.Show(this, "写数据失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             br.Close();
@@ -306,7 +306,7 @@ namespace CANBootloader
                         sender.SetProgress((int)(AddrOffset+read_data_num), "正在发送固件数据...");
                     }
                     //执行固件
-                    ret = USB2CAN.CAN_BL_Excute(DeviceIndex, CANIndex, NodeAddr, USB2CAN.CAN_BL_APP);
+                    ret = USB2CAN.CAN_BL_Excute(DevHandles[DeviceIndex], CANIndex, NodeAddr, USB2CAN.CAN_BL_APP);
                     if (ret != USB2CAN.CAN_SUCCESS)
                     {
                         MessageBox.Show(this, "执行固件跳转命令失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -318,7 +318,7 @@ namespace CANBootloader
                     if (!this.checkBoxAllNode.Checked)
                     {
                         UInt32[] appVersion = new UInt32[1], appType = new UInt32[1];
-                        ret = USB2CAN.CAN_BL_NodeCheck(DeviceIndex, CANIndex, NodeAddr, appVersion, appType, 10);
+                        ret = USB2CAN.CAN_BL_NodeCheck(DevHandles[DeviceIndex], CANIndex, NodeAddr, appVersion, appType, 10);
                         if (ret == USB2CAN.CAN_SUCCESS)
                         {
                             string AppTypeStr;
@@ -388,7 +388,7 @@ namespace CANBootloader
                 CAN_InitConfig.CAN_SJW = CANBaudRateTab[GetBaudRateIndex(BaudRate)].SJW;
                 CAN_InitConfig.CAN_BS1 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS1;
                 CAN_InitConfig.CAN_BS2 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS2;
-                int ret = USB2CAN.CAN_BL_SetNewBaudRate(DeviceIndex, CANIndex, NodeAddr, ref CAN_InitConfig, (UInt32)BaudRate, 100);
+                int ret = USB2CAN.CAN_BL_SetNewBaudRate(DevHandles[DeviceIndex], CANIndex, NodeAddr, ref CAN_InitConfig, (UInt32)BaudRate, 100);
                 if (ret != USB2CAN.CAN_SUCCESS)
                 {
                     MessageBox.Show(this, "设置新波特率失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -438,7 +438,7 @@ namespace CANBootloader
             {
                 int ret;
                 UInt32[] appVersion = new UInt32[1], appType = new UInt32[1];
-                ret = USB2CAN.CAN_BL_NodeCheck(DeviceIndex, CANIndex,(UInt16)i,appVersion,appType,10);
+                ret = USB2CAN.CAN_BL_NodeCheck(DevHandles[DeviceIndex], CANIndex, (UInt16)i, appVersion, appType, 10);
                 if (ret == USB2CAN.CAN_SUCCESS)
                 {
                     this.listViewNodeList.BeginUpdate();  //数据更新，UI暂时挂起，直到EndUpdate绘制控件，可以有效避免闪烁并大大提高加载速度  
