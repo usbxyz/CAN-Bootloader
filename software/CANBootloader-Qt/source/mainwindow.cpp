@@ -99,7 +99,6 @@ bool MainWindow::DeviceConfig(void)
     CAN_InitConfig.CAN_SJW = CANBaudRateTab[CAN_GetBaudRateNum(baud)].SJW;
     CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
     CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
-
     ret = CAN_BL_Init(DeviceHandle,
                      ui->channelIndexComboBox->currentIndex(),
                      &CAN_InitConfig,
@@ -142,7 +141,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             return;
         }
     }
-    uint16_t NodeAddr;
+    uint16_t NodeAddr=0;
     ConfFlag = DeviceConfig();
     if(!ConfFlag){
         return;
@@ -239,7 +238,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                            ui->channelIndexComboBox->currentIndex(),
                            NodeAddr,
                            firmwareFile.size(),
-                           3000);
+                           5000);
         if(ret != CAN_SUCCESS){
             qDebug()<<"CBL_EraseFlash = "<<ret;
 #ifdef LANGUE_EN
@@ -250,11 +249,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             USB_CloseDevice(DeviceHandle);
             return;
         }
-        if(ui->allNodeCheckBox->isChecked()){
+        if(ui->allNodeCheckBox->isChecked()){//批量更新的时候，由于不检测节点状态返回，所以需要在这里增加延时函数
 #ifndef OS_UNIX
-            Sleep(500);
+            Sleep(1000);
 #else
-            usleep(500*1000);
+            usleep(1000*1000);
 #endif
         }
         int read_data_num;
@@ -294,11 +293,11 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                 USB_CloseDevice(DeviceHandle);
                 return;
             }
-            if(ui->allNodeCheckBox->isChecked()){
+            if(ui->allNodeCheckBox->isChecked()){//批量更新的时候，由于不检测节点状态返回，所以需要在这里增加延时函数
 #ifndef OS_UNIX
-                Sleep(10);
+                Sleep(30);
 #else
-                usleep(10*1000);
+                usleep(30*1000);
 #endif
             }
         }
@@ -404,7 +403,7 @@ void MainWindow::on_scanNodeAction_triggered()
                             startAddr,
                             &appversion,
                             &appType,
-                            10);
+                            20);
         if(ret == CAN_SUCCESS){
             ui->nodeListTableWidget->setRowCount(ui->nodeListTableWidget->rowCount()+1);
             ui->nodeListTableWidget->setRowHeight(ui->nodeListTableWidget->rowCount()-1,20);
@@ -423,6 +422,7 @@ void MainWindow::on_scanNodeAction_triggered()
             item = new QTableWidgetItem(str);
             ui->nodeListTableWidget->setItem(ui->nodeListTableWidget->rowCount()-1,2,item);
         }
+        //qDebug()<<"ret = "<<ret;
         scanNodeProcess.setValue(i);
         QCoreApplication::processEvents(QEventLoop::AllEvents);
         if(scanNodeProcess.wasCanceled()){

@@ -34,8 +34,6 @@ CBL_CMD_LIST CMD_List =
 };
 extern CanRxMsg CAN1_RxMessage;
 extern volatile uint8_t CAN1_CanRxMsgFlag;//接收到CAN数据后的标志
-extern volatile uint8_t TimeOutFlag;				///<定时器超时标志
-volatile uint16_t BOOT_TimeOutCount;
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -43,127 +41,6 @@ volatile uint16_t BOOT_TimeOutCount;
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
-/**
-  * @brief  根据地址配置引脚设置程序启动方式
-  * @param  None
-  * @retval None
-  */
-void BOOT_Config(void)
-{
-	NVIC_InitTypeDef NVIC_InitStructure;
-	GPIO_InitTypeDef GPIO_InitStructure;
-	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG,ENABLE);
-	/*Configure Addr Pin*/
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOG, &GPIO_InitStructure);
-	if(CAN_BOOT_GetAddrData()==0x00){
-		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-		// 使能外设时钟
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);
-		/* 时钟及分频设置 */
-		/* 30M/30000 = 1ms */
-		TIM_TimeBaseStructure.TIM_Prescaler = 72-1;// 预分频，分频后的频率为1K    
-		TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; //计数模式:向上计数
-		// TIM的重载值，决定定时时间长度，
-		TIM_TimeBaseStructure.TIM_Period =1000;	  // 计数重载值，向上计数时，计数到该值溢出，向下计数时，从该值开始计数
-		TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 与数字滤波器的采样率有关       
-		TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;  //重新计数的起始值
-		TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-
-		TimeOutFlag = 0;
-		
-		/* Disable the TIM Counter */
-		TIM2->CR1 &= (uint16_t)(~TIM_CR1_CEN);
-
-		TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE); //开启溢出中断
-		
-		/* Enable the TIM2 global Interrupt */
-		NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;							// 中断源
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 	// 先占优先级
-		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;					// 从优先级
-		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 						// 使能中断
-		NVIC_Init(&NVIC_InitStructure);		
-		
-		/* 	Enable the TIM Counter */
-		TIM2->CR1 |= (uint16_t)TIM_CR1_CEN;
-		while(CAN_BOOT_GetAddrData()==0x00){
-			if(TimeOutFlag){
-				TimeOutFlag = 0;
-				__set_PRIMASK(1);//关闭所有中断
-				FLASH_Unlock();
-				CAN_BOOT_ErasePage(APP_EXE_FLAG_START_ADDR,APP_START_ADDR);
-				__set_PRIMASK(0);//开启所有中断
-			}
-		}
-		/* Disable the TIM Counter */
-		TIM2->CR1 &= (uint16_t)(~TIM_CR1_CEN);
-	}
-	if((*((uint32_t *)APP_EXE_FLAG_START_ADDR)==0x12345678)&&(*((uint32_t *)APP_START_ADDR)!=0xFFFFFFFF)){
-		CAN_BOOT_JumpToApplication(APP_START_ADDR);	
-	}
-	__set_PRIMASK(0);//开启总中断
-	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0000); //重新映射中断向量表
-}
-
-/**
-  * @brief  TIM定时器超时中断处理函数
-  * @param  None
-  * @retval None
-  */
-void TIM3_IRQHandler(void)
-{
-	if(TIM_GetITStatus(TIM3,TIM_IT_Update)== SET)
-	{
-		TIM_ClearITPendingBit(TIM3,TIM_IT_Update); //清楚溢出标志
-		BOOT_TimeOutCount++;
-	}
-}
-
-/**
-  * @brief  根据地址配置引脚设置程序启动方式
-  * @param  None
-  * @retval None
-  */
-void BOOT_Delay_Config(void)
-{
-	NVIC_InitTypeDef NVIC_InitStructure;
-	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-	__set_PRIMASK(0);//开启总中断
-	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0000); //重新映射中断向量表
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-	// 使能外设时钟
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);
-	/* 时钟及分频设置 */
-	/* 30M/60000 = 1ms */
-	TIM_TimeBaseStructure.TIM_Prescaler = 72-1;// 预分频，分频后的频率为1M   
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; //计数模式:向上计数
-	// TIM的重载值，决定定时时间长度，1
-	TIM_TimeBaseStructure.TIM_Period =1000;	  // 计数重载值，向上计数时，计数到该值溢出，向下计数时，从该值开始计数
-	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 与数字滤波器的采样率有关       
-	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;  //重新计数的起始值
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-
-	TimeOutFlag = 0;
-		
-	/* Disable the TIM Counter */
-	TIM3->CR1 &= (uint16_t)(~TIM_CR1_CEN);
-
-	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE); //开启溢出中断
-	
-	/* Enable the TIM2 global Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;							// 中断源
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 	// 先占优先级
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;					// 从优先级
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 						// 使能中断
-	NVIC_Init(&NVIC_InitStructure);		
-		
-	/* 	Enable the TIM Counter */
-	TIM3->CR1 |= (uint16_t)TIM_CR1_CEN;
-	BOOT_TimeOutCount = 0;
-}
 
 /**
   * @brief  主函数，实现LED灯的闪烁

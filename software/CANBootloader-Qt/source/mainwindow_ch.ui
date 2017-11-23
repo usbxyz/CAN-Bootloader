@@ -393,7 +393,22 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>800 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>500 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>300 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>250 Kbps</string>
                   </property>
                  </item>
                  <item>
@@ -403,7 +418,22 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>150 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>125 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>100 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>75 Kbps</string>
                   </property>
                  </item>
                  <item>
@@ -461,7 +491,22 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>800 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>500 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>300 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>250 Kbps</string>
                   </property>
                  </item>
                  <item>
@@ -471,7 +516,22 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>150 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>125 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>100 Kbps</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>75 Kbps</string>
                   </property>
                  </item>
                  <item>
