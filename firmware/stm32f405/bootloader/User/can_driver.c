@@ -69,7 +69,7 @@ uint32_t CAN_GetBaudRateNum(uint32_t BaudRate)
 void CAN_GPIO_Configuration(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-#if 0
+#if 1
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB,ENABLE);
   // CAN1 periph clock enable
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);

@@ -438,9 +438,10 @@ namespace CANBootloader
             {
                 int ret;
                 UInt32[] appVersion = new UInt32[1], appType = new UInt32[1];
-                ret = USB2CAN.CAN_BL_NodeCheck(DevHandles[DeviceIndex], CANIndex, (UInt16)i, appVersion, appType, 10);
+                ret = USB2CAN.CAN_BL_NodeCheck(DevHandles[DeviceIndex], CANIndex, (UInt16)i, appVersion, appType, 100);
                 if (ret == USB2CAN.CAN_SUCCESS)
                 {
+                    //Ctrl+F5启动程序这里运行正常，F5启动程序运行不正常，能扫描到节点，但是无法在界面上显示出来，原因不明
                     this.listViewNodeList.BeginUpdate();  //数据更新，UI暂时挂起，直到EndUpdate绘制控件，可以有效避免闪烁并大大提高加载速度  
                     ListViewItem lvi = new ListViewItem();
                     lvi.Text = i.ToString();

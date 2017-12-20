@@ -643,22 +643,8 @@
     </property>
     <addaction name="scanNodeAction"/>
    </widget>
-   <widget class="QMenu" name="menu_3">
-    <property name="title">
-     <string>帮助</string>
-    </property>
-    <addaction name="contactUsAction"/>
-    <addaction name="aboutAction"/>
-   </widget>
-   <widget class="QMenu" name="menu_4">
-    <property name="title">
-     <string>工具</string>
-    </property>
-   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
-   <addaction name="menu_4"/>
-   <addaction name="menu_3"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -669,8 +655,6 @@
    </attribute>
    <addaction name="openFirmwareFileAction"/>
    <addaction name="scanNodeAction"/>
-   <addaction name="contactUsAction"/>
-   <addaction name="aboutAction"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
