@@ -75,6 +75,19 @@ bool MainWindow::DeviceConfig(void)
 #endif
         return false;
     }
+    DEVICE_INFO DevInfo;
+    char FuncStr[256];
+    state = DEV_GetDeviceInfo(DeviceHandle,&DevInfo,FuncStr);
+    if(!state){
+#ifdef LANGUE_EN
+        QMessageBox::warning(this,"Warning","Get device infomation faild!");
+#else
+        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("获取设备信息失败！"));
+#endif
+        return false;
+    }
+    uint64_t DevType = ((uint64_t)DevInfo.SerialNumber[0]<<32)|(DevInfo.SerialNumber[1]);
+    const uint64_t DevTypeUSB2CANB = ((uint64_t)'U'<<56)|((uint64_t)'S'<<48)|((uint64_t)'B'<<40)|((uint64_t)'2'<<32)|((uint64_t)'C'<<24)|((uint64_t)'A'<<16)|((uint64_t)'N'<<8)|((uint64_t)'B'<<0);
     CBL_CMD_LIST CMD_List;
     QString cmdStr[]={"Erase","WriteInfo","Write","Check","SetBaudRate","Excute","CmdSuccess","CmdFaild"};
     uint8_t cmdData[16];
@@ -95,10 +108,19 @@ bool MainWindow::DeviceConfig(void)
     QString str = ui->baudRateComboBox->currentText();
     str.resize(str.length()-4);
     int baud = str.toInt(NULL,10)*1000;
-    CAN_InitConfig.CAN_BRP = CANBaudRateTab[CAN_GetBaudRateNum(baud)].PreScale;
-    CAN_InitConfig.CAN_SJW = CANBaudRateTab[CAN_GetBaudRateNum(baud)].SJW;
-    CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
-    CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
+    if(DevType == DevTypeUSB2CANB){
+        qDebug()<<"DevType = USB2CANB";
+        CAN_InitConfig.CAN_BRP = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].PreScale;
+        CAN_InitConfig.CAN_SJW = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].SJW;
+        CAN_InitConfig.CAN_BS1 = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].BS1;
+        CAN_InitConfig.CAN_BS2 = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].BS2;
+    }else{
+        qDebug()<<"DevType = USB2XXXB";
+        CAN_InitConfig.CAN_BRP = CANBaudRateTab[CAN_GetBaudRateNum(baud)].PreScale;
+        CAN_InitConfig.CAN_SJW = CANBaudRateTab[CAN_GetBaudRateNum(baud)].SJW;
+        CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
+        CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
+    }
     ret = CAN_BL_Init(DeviceHandle,
                      ui->channelIndexComboBox->currentIndex(),
                      &CAN_InitConfig,
@@ -520,7 +542,7 @@ void MainWindow::on_contactUsAction_triggered()
 void MainWindow::on_aboutAction_triggered()
 {
     QString AboutStr;
-    AboutStr.append("USB2XXX USB2CAN Bootloader 1.0.2<br>");
+    AboutStr.append("USB2XXX USB2CAN Bootloader 1.0.3<br>");
 #ifndef LANG_EN
     AboutStr.append(("支持硬件：USB2XXX<br>"));
     AboutStr.append(("购买地址：<a href=\"http://usb2xxx.taobao.com/\">usb2xxx.taobao.com</a>"));
