@@ -12,6 +12,8 @@ namespace CANBootloader
 {
     public partial class FormMain : Form
     {
+        UInt64 DevType;
+        UInt64 DevTypeUSB2CANB = ((UInt64)'U' << 56) | ((UInt64)'S' << 48) | ((UInt64)'B' << 40) | ((UInt64)'2' << 32) | ((UInt64)'C' << 24) | ((UInt64)'A' << 16) | ((UInt64)'N' << 8) | ((UInt64)'B' << 0);
         //定义CAN波特率参数表
         struct CAN_BAUD_RATE
         {
@@ -58,6 +60,36 @@ namespace CANBootloader
             new CAN_BAUD_RATE(1,6,1,625,20000),     // 20K
             new CAN_BAUD_RATE(1,13,2,625,10000),    // 10K
             new CAN_BAUD_RATE(1,16,3,1000,5000),    // 5K
+        };
+        readonly CAN_BAUD_RATE[] CANBaudRateTab42M = {
+            //SJW,BS1,BS2,BRP
+            new CAN_BAUD_RATE(1,15,5,2,1000000),       // 1M
+            new CAN_BAUD_RATE(1,16,6,2,900000),       // 900K
+            new CAN_BAUD_RATE(1,2,1,13,800000),       // 800K
+            new CAN_BAUD_RATE(1,16,4,3,666000),       // 666K
+            new CAN_BAUD_RATE(1,7,2,7,600000),       // 600K
+            new CAN_BAUD_RATE(1,16,4,4,500000),       // 500K
+            new CAN_BAUD_RATE(1,12,2,7,400000),       // 400K
+            new CAN_BAUD_RATE(1,5,1,20,300000),      // 300K
+            new CAN_BAUD_RATE(1,6,1,21,250000),      // 250K
+            new CAN_BAUD_RATE(1,14,2,11,225000),      // 225K
+            new CAN_BAUD_RATE(1,5,1,30,200000),      // 200K
+            new CAN_BAUD_RATE(1,6,1,33,160000),      // 160K
+            new CAN_BAUD_RATE(1,6,1,35,150000),      // 150K
+            new CAN_BAUD_RATE(1,3,1,58,144000),      // 144K
+            new CAN_BAUD_RATE(1,6,1,42,125000),     // 125K
+            new CAN_BAUD_RATE(1,8,1,35,120000),     // 120K
+            new CAN_BAUD_RATE(1,15,4,21,100000),      // 100K
+            new CAN_BAUD_RATE(1,15,2,26,90000),     // 90K
+            new CAN_BAUD_RATE(1,3,1,105,80000),     // 80K
+            new CAN_BAUD_RATE(1,6,1,70,75000),      // 75K
+            new CAN_BAUD_RATE(1,16,3,35,60000),      // 60K
+            new CAN_BAUD_RATE(1,6,1,105,50000),      // 50K
+            new CAN_BAUD_RATE(1,5,1,150,40000),      // 40K
+            new CAN_BAUD_RATE(1,6,1,175,30000),     // 30K
+            new CAN_BAUD_RATE(1,12,2,140,20000),     // 20K
+            new CAN_BAUD_RATE(1,6,1,525,10000),     // 10K
+            new CAN_BAUD_RATE(1,13,2,525,5000),     // 5K
         };
         //
         short ScanStartAddr = 0, ScanEndAddr = 0;
@@ -118,6 +150,15 @@ namespace CANBootloader
                 MessageBox.Show(this, "打开设备失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
+            //获取设备类型
+            usb_device.DEVICE_INFO DevInfo = new usb_device.DEVICE_INFO();
+            StringBuilder FuncStr = new StringBuilder(256);
+            state = usb_device.DEV_GetDeviceInfo(DevHandles[DeviceIndex],ref DevInfo,FuncStr);
+            if(!state){
+                MessageBox.Show(this, "获取设备信息失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            DevType = ((UInt64)DevInfo.SerialNumber[0]<<32)|(DevInfo.SerialNumber[1]);
 
             USB2CAN.CBL_CMD_LIST CMD_List = new USB2CAN.CBL_CMD_LIST();
             String[] cmdStr={"Erase","WriteInfo","Write","Check","SetBaudRate","Excute","CmdSuccess","CmdFaild"};
@@ -140,11 +181,20 @@ namespace CANBootloader
             CMD_List.CmdFaild = cmdData[7];
             USB2CAN.CAN_INIT_CONFIG CAN_InitConfig = new USB2CAN.CAN_INIT_CONFIG();
             int BaudRate = int.Parse(this.comboBoxBaudRate.Text.Substring(0,this.comboBoxBaudRate.Text.Length-4));
-            CAN_InitConfig.CAN_BRP = (UInt32)CANBaudRateTab[GetBaudRateIndex(BaudRate)].PreScale;
-            CAN_InitConfig.CAN_SJW = CANBaudRateTab[GetBaudRateIndex(BaudRate)].SJW;
-            CAN_InitConfig.CAN_BS1 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS1;
-            CAN_InitConfig.CAN_BS2 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS2;
-
+            if (DevType == DevTypeUSB2CANB)
+            {
+                CAN_InitConfig.CAN_BRP = (UInt32)CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].PreScale;
+                CAN_InitConfig.CAN_SJW = CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].SJW;
+                CAN_InitConfig.CAN_BS1 = CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].BS1;
+                CAN_InitConfig.CAN_BS2 = CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].BS2;
+            }
+            else
+            {
+                CAN_InitConfig.CAN_BRP = (UInt32)CANBaudRateTab[GetBaudRateIndex(BaudRate)].PreScale;
+                CAN_InitConfig.CAN_SJW = CANBaudRateTab[GetBaudRateIndex(BaudRate)].SJW;
+                CAN_InitConfig.CAN_BS1 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS1;
+                CAN_InitConfig.CAN_BS2 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS2;
+            }
             ret = USB2CAN.CAN_BL_Init(DevHandles[DeviceIndex], CANIndex, ref CAN_InitConfig, ref CMD_List);
             if(ret!=USB2CAN.CAN_SUCCESS)
             {
@@ -384,10 +434,20 @@ namespace CANBootloader
                 }
                 USB2CAN.CAN_INIT_CONFIG CAN_InitConfig = new USB2CAN.CAN_INIT_CONFIG();
                 int BaudRate = int.Parse(this.comboBoxNewBaudRate.Text.Substring(0, this.comboBoxNewBaudRate.Text.Length - 4));
-                CAN_InitConfig.CAN_BRP = (UInt32)CANBaudRateTab[GetBaudRateIndex(BaudRate)].PreScale;
-                CAN_InitConfig.CAN_SJW = CANBaudRateTab[GetBaudRateIndex(BaudRate)].SJW;
-                CAN_InitConfig.CAN_BS1 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS1;
-                CAN_InitConfig.CAN_BS2 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS2;
+                if (DevType == DevTypeUSB2CANB)
+                {
+                    CAN_InitConfig.CAN_BRP = (UInt32)CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].PreScale;
+                    CAN_InitConfig.CAN_SJW = CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].SJW;
+                    CAN_InitConfig.CAN_BS1 = CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].BS1;
+                    CAN_InitConfig.CAN_BS2 = CANBaudRateTab42M[GetBaudRateIndex(BaudRate)].BS2;
+                }
+                else
+                {
+                    CAN_InitConfig.CAN_BRP = (UInt32)CANBaudRateTab[GetBaudRateIndex(BaudRate)].PreScale;
+                    CAN_InitConfig.CAN_SJW = CANBaudRateTab[GetBaudRateIndex(BaudRate)].SJW;
+                    CAN_InitConfig.CAN_BS1 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS1;
+                    CAN_InitConfig.CAN_BS2 = CANBaudRateTab[GetBaudRateIndex(BaudRate)].BS2;
+                }
                 int ret = USB2CAN.CAN_BL_SetNewBaudRate(DevHandles[DeviceIndex], CANIndex, NodeAddr, ref CAN_InitConfig, (UInt32)BaudRate, 100);
                 if (ret != USB2CAN.CAN_SUCCESS)
                 {

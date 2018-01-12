@@ -28,28 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "Erase",
             "0"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "WriteInfo",
             "1"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
             "Write",
             "2"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
             "Check",
             "3"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem21 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
             "SetBaudRate",
             "4"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem22 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
             "Excute",
             "5"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem23 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
             "CmdSuccess",
             "8"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem24 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
             "CmdFaild",
             "9"}, -1);
             this.节点列表 = new System.Windows.Forms.GroupBox();
@@ -158,14 +158,14 @@
             this.listViewCmdList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewCmdList.FullRowSelect = true;
             this.listViewCmdList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem17,
-            listViewItem18,
-            listViewItem19,
-            listViewItem20,
-            listViewItem21,
-            listViewItem22,
-            listViewItem23,
-            listViewItem24});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6,
+            listViewItem7,
+            listViewItem8});
             this.listViewCmdList.Location = new System.Drawing.Point(3, 17);
             this.listViewCmdList.Name = "listViewCmdList";
             this.listViewCmdList.Size = new System.Drawing.Size(297, 228);
@@ -314,7 +314,8 @@
             this.comboBoxCANIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCANIndex.FormattingEnabled = true;
             this.comboBoxCANIndex.Items.AddRange(new object[] {
-            "0"});
+            "0",
+            "1"});
             this.comboBoxCANIndex.Location = new System.Drawing.Point(191, 13);
             this.comboBoxCANIndex.Name = "comboBoxCANIndex";
             this.comboBoxCANIndex.Size = new System.Drawing.Size(46, 20);
@@ -401,7 +402,7 @@
             // 
             this.打开文件ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_045;
             this.打开文件ToolStripMenuItem.Name = "打开文件ToolStripMenuItem";
-            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.打开文件ToolStripMenuItem.Text = "打开文件";
             this.打开文件ToolStripMenuItem.Click += new System.EventHandler(this.打开文件ToolStripMenuItem_Click);
             // 
@@ -409,7 +410,7 @@
             // 
             this.退出ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_026;
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.退出ToolStripMenuItem.Text = "退出";
             this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
@@ -442,7 +443,7 @@
             // 
             this.联系我们ToolStripMenuItem.Image = global::CANBootloader.Properties.Resources.gif_48_079;
             this.联系我们ToolStripMenuItem.Name = "联系我们ToolStripMenuItem";
-            this.联系我们ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.联系我们ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.联系我们ToolStripMenuItem.Text = "联系我们";
             this.联系我们ToolStripMenuItem.Click += new System.EventHandler(this.联系我们ToolStripMenuItem_Click);
             // 

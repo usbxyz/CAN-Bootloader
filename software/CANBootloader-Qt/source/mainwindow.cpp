@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     //qDebug << "sizeof(CANBaudRateTab) = " << sizeof(CANBaudRateTab);
     ScanDevice();
+    DevTypeUSB2CANB = ((uint64_t)'U'<<56)|((uint64_t)'S'<<48)|((uint64_t)'B'<<40)|((uint64_t)'2'<<32)|((uint64_t)'C'<<24)|((uint64_t)'A'<<16)|((uint64_t)'N'<<8)|((uint64_t)'B'<<0);
 }
 
 MainWindow::~MainWindow()
@@ -86,8 +87,7 @@ bool MainWindow::DeviceConfig(void)
 #endif
         return false;
     }
-    uint64_t DevType = ((uint64_t)DevInfo.SerialNumber[0]<<32)|(DevInfo.SerialNumber[1]);
-    const uint64_t DevTypeUSB2CANB = ((uint64_t)'U'<<56)|((uint64_t)'S'<<48)|((uint64_t)'B'<<40)|((uint64_t)'2'<<32)|((uint64_t)'C'<<24)|((uint64_t)'A'<<16)|((uint64_t)'N'<<8)|((uint64_t)'B'<<0);
+    DevType = ((uint64_t)DevInfo.SerialNumber[0]<<32)|(DevInfo.SerialNumber[1]);
     CBL_CMD_LIST CMD_List;
     QString cmdStr[]={"Erase","WriteInfo","Write","Check","SetBaudRate","Excute","CmdSuccess","CmdFaild"};
     uint8_t cmdData[16];
@@ -108,6 +108,7 @@ bool MainWindow::DeviceConfig(void)
     QString str = ui->baudRateComboBox->currentText();
     str.resize(str.length()-4);
     int baud = str.toInt(NULL,10)*1000;
+    qDebug()<<"baud = "<<baud;
     if(DevType == DevTypeUSB2CANB){
         qDebug()<<"DevType = USB2CANB";
         CAN_InitConfig.CAN_BRP = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].PreScale;
@@ -490,10 +491,20 @@ void MainWindow::on_setbaudRatePushButton_clicked()
     QString str = ui->newBaudRateComboBox->currentText();
     str.resize(str.length()-4);
     int baud = str.toInt(NULL,10)*1000;
-    CAN_InitConfig.CAN_BRP = CANBaudRateTab[CAN_GetBaudRateNum(baud)].PreScale;
-    CAN_InitConfig.CAN_SJW = CANBaudRateTab[CAN_GetBaudRateNum(baud)].SJW;
-    CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
-    CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
+    qDebug()<<"baud = "<<baud;
+    if(DevType == DevTypeUSB2CANB){
+        qDebug()<<"DevType = USB2CANB";
+        CAN_InitConfig.CAN_BRP = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].PreScale;
+        CAN_InitConfig.CAN_SJW = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].SJW;
+        CAN_InitConfig.CAN_BS1 = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].BS1;
+        CAN_InitConfig.CAN_BS2 = CANBaudRateTab42M[CAN_GetBaudRateNum(baud)].BS2;
+    }else{
+        qDebug()<<"DevType = USB2XXXB";
+        CAN_InitConfig.CAN_BRP = CANBaudRateTab[CAN_GetBaudRateNum(baud)].PreScale;
+        CAN_InitConfig.CAN_SJW = CANBaudRateTab[CAN_GetBaudRateNum(baud)].SJW;
+        CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
+        CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
+    }
     uint16_t NodeAddr;
     if(ui->allNodeCheckBox->isChecked()){
         NodeAddr = 0x00;

@@ -114,6 +114,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    uint64_t DevType;
+    uint64_t DevTypeUSB2CANB;
 };
 
 #endif // MAINWINDOW_H
