@@ -161,7 +161,7 @@ namespace CANBootloader
             DevType = ((UInt64)DevInfo.SerialNumber[0]<<32)|(DevInfo.SerialNumber[1]);
 
             USB2CAN.CBL_CMD_LIST CMD_List = new USB2CAN.CBL_CMD_LIST();
-            String[] cmdStr={"Erase","WriteInfo","Write","Check","SetBaudRate","Excute","CmdSuccess","CmdFaild"};
+            String[] cmdStr={"Erase","WriteInfo","Write","Check","SetBaudRate","Execute","CmdSuccess","CmdFaild"};
             byte[] cmdData = new byte[cmdStr.Length];
             for(int i=0;i<this.listViewCmdList.Items.Count;i++)
             {
@@ -176,7 +176,7 @@ namespace CANBootloader
             CMD_List.Write = cmdData[2];
             CMD_List.Check = cmdData[3];
             CMD_List.SetBaudRate = cmdData[4];
-            CMD_List.Excute = cmdData[5];
+            CMD_List.Execute = cmdData[5];
             CMD_List.CmdSuccess = cmdData[6];
             CMD_List.CmdFaild = cmdData[7];
             USB2CAN.CAN_INIT_CONFIG CAN_InitConfig = new USB2CAN.CAN_INIT_CONFIG();

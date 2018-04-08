@@ -66,7 +66,7 @@ namespace USB2XXX
             public Byte Write;          //以多字节形式写数据
             public Byte Check;          //检测节点是否在线，同时返回固件信息
             public Byte SetBaudRate;    //设置节点波特率
-            public Byte Excute;         //执行固件
+            public Byte Execute;        //执行固件
             //节点返回状态
             public Byte CmdSuccess;     //命令执行成功
             public Byte CmdFaild;       //命令执行失败

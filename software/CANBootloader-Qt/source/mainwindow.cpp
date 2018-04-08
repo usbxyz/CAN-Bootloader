@@ -300,7 +300,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                                i,
                                FirmwareData,
                                read_data_num,
-                               1000);
+                               3000);
             if(ret != CAN_SUCCESS){
 #ifdef LANGUE_EN
                 QMessageBox::warning(this,"Warning","Write flash faild!");
@@ -426,7 +426,7 @@ void MainWindow::on_scanNodeAction_triggered()
                             startAddr,
                             &appversion,
                             &appType,
-                            20);
+                            50);
         if(ret == CAN_SUCCESS){
             ui->nodeListTableWidget->setRowCount(ui->nodeListTableWidget->rowCount()+1);
             ui->nodeListTableWidget->setRowHeight(ui->nodeListTableWidget->rowCount()-1,20);

@@ -44,7 +44,7 @@
             "SetBaudRate",
             "4"}, -1);
             System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Excute",
+            "Execute",
             "5"}, -1);
             System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
             "CmdSuccess",
