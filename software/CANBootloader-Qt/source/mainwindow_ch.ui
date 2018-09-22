@@ -656,6 +656,8 @@
    <addaction name="openFirmwareFileAction"/>
    <addaction name="scanNodeAction"/>
    <addaction name="separator"/>
+   <addaction name="contactUsAction"/>
+   <addaction name="aboutAction"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="exitAction">

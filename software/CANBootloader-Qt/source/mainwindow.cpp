@@ -122,6 +122,7 @@ bool MainWindow::DeviceConfig(void)
         CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
         CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
     }
+    CAN_InitConfig.CAN_Mode |= 0x80;
     ret = CAN_BL_Init(DeviceHandle,
                      ui->channelIndexComboBox->currentIndex(),
                      &CAN_InitConfig,

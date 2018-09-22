@@ -26,8 +26,9 @@
 #define CAN_ID_TYPE 1         //1为扩展帧，0为标准帧，不要修改
 #define ADDR_MASK   0x1FFFFFF //不要修改
 
-#define APP_EXE_FLAG_START_ADDR    ((uint32_t)0x08004000)
-#define APP_START_ADDR             ((uint32_t)0x08008000)
+#define APP_EXE_FLAG_START_ADDR    ((uint32_t)0x08004000)//APP程序成功运行标志存储地址
+#define APP_START_ADDR             ((uint32_t)0x08008000)//APP程序起始地址
+
 #define CAN_BL_BOOT     0x55555555
 #define CAN_BL_APP      0xAAAAAAAA
 #define FW_TYPE         CAN_BL_BOOT
