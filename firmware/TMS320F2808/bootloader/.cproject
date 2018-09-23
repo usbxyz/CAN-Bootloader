@@ -13,7 +13,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="out" artifactName="${ProjName}" buildProperties="" cleanCommand="${CG_CLEAN_CMD}" description="" id="com.ti.ccstudio.buildDefinitions.C2000.Debug.1176453397" name="Debug" parent="com.ti.ccstudio.buildDefinitions.C2000.Debug">
+				<configuration artifactExtension="out" artifactName="${ProjName}" buildProperties="" cleanCommand="${CG_CLEAN_CMD}" description="" id="com.ti.ccstudio.buildDefinitions.C2000.Debug.1176453397" name="Debug" parent="com.ti.ccstudio.buildDefinitions.C2000.Debug" postbuildStep="&quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/tiobj2bin.bat&quot; &quot;${BuildArtifactFileName}&quot; &quot;${BuildArtifactFileBaseName}.bin&quot; &quot;${CG_TOOL_ROOT}/bin/ofd2000.exe&quot; &quot;${CG_TOOL_ROOT}/bin/hex2000.exe&quot; &quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/mkhex4bin.exe&quot;;">
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.C2000.Debug.1176453397." name="/" resourcePath="">
 						<toolChain id="com.ti.ccstudio.buildDefinitions.C2000_18.1.exe.DebugToolchain.514228892" name="TI Build Tools" secondaryOutputs="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.outputType__BIN" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.exe.DebugToolchain" targetTool="com.ti.ccstudio.buildDefinitions.C2000_18.1.exe.linkerDebug.1999852393">
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.1928442709" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
@@ -77,10 +77,10 @@
 								<inputType id="com.ti.ccstudio.buildDefinitions.C2000_18.1.exeLinker.inputType__GEN_CMDS.620449017" name="Generated Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.exeLinker.inputType__GEN_CMDS"/>
 							</tool>
 							<tool id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.2037039870" name="C2000 Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex">
-								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.TOOL_ENABLE.731903936" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.TOOL_ENABLE" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ORDER.340611663" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ORDER" value="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ORDER.MS" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ROMWIDTH.1681657120" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ROMWIDTH" value="16" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.OUTPUT_FORMAT.1550698658" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.OUTPUT_FORMAT" value="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.OUTPUT_FORMAT.INTEL" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.TOOL_ENABLE.731903936" name="Enable tool" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.TOOL_ENABLE" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ORDER.340611663" name="Specify data ordering (endianness) (--order, -order)" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ORDER" value="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ORDER.MS" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ROMWIDTH.1681657120" name="Specify rom width (--romwidth, -romwidth=width)" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.ROMWIDTH" value="16" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.OUTPUT_FORMAT.1550698658" name="Output format" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.OUTPUT_FORMAT" value="com.ti.ccstudio.buildDefinitions.C2000_18.1.hex.OUTPUT_FORMAT.INTEL" valueType="enumerated"/>
 							</tool>
 						</toolChain>
 					</folderInfo>

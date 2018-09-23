@@ -5,10 +5,11 @@
  *      Author: admin
  */
 #include "BootLoader.h"
+#include "crc16.h"
 typedef  void (*pFunction)(void);
 bootloader_data Boot_ID_info;
 u8     data_temp[DATA_PACK_SIZE];
-Uint16 write_temp[DATA_PACK_SIZE/2];
+Uint16    write_temp[DATA_PACK_SIZE>>1];
 u32 start_addr = 0x0000;//每一包数据的起始地址
 u32 data_size=0;//数据包的大小
 u32 data_index=0;//数据指针
@@ -54,32 +55,9 @@ void __set_PRIMASK(u8 state)
         return;
     }
 }
-unsigned short int CRCcalc16 (unsigned char *data,unsigned short int len)
-{
-    int i;
-    unsigned short int crc_res =  0xFFFF;
-    while(len--)
-    {
-        crc_res^=*data++;
-        for(i = 0;i < 8;i++)
-        {
-            if(crc_res&0x01)
-            {
-                crc_res = (crc_res>>1)^0xa001;
-            }
-            else
-            {
-                crc_res = (crc_res>>1);
-            }
-        }
-    }
-    return crc_res;
-}
+
 void CAN_BOOT_JumpToApplication(uint32_t Addr)
 {
-    //  asm(" LB  0x310000");
-   // (*((void(*)(void))(Addr)))();
-    //(*(pFunction)(Addr))();
     pFunction jump;
     jump = (pFunction)(Addr);
     jump();
@@ -88,7 +66,7 @@ void CAN_BOOT_JumpToApplication(uint32_t Addr)
 #pragma CODE_SECTION(CAN_BOOT_ExecutiveCommand,"ramfuncs");
 void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
 {
-    u8 i;
+    u32 i=0;
     u8 can_cmd    = 0x00;//ID的bit0~bit3位为命令码
     u16 can_addr  = 0x00;//ID的bit4~bit15位为节点地址
     uint32_t exe_type = 0x00;
@@ -124,13 +102,6 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
     if(can_cmd == cmd_list.Erase)
     {
         __set_PRIMASK(1); //关闭全局中断
-        /*----------------------------------------------------------------------
-        //擦除扇区操作
-        FLASH_Unlock();
-        FlashSize = (pRxMessage->Data[0]<<24)|(pRxMessage->Data[1]<<16)|(pRxMessage->Data[2]<<8)|(pRxMessage->Data[3]<<0);
-        ret =  CAN_BOOT_ErasePage(APP_EXE_FLAG_START_ADDR,APP_START_ADDR+FlashSize);
-        FLASH_Lock();
-        ---------------------------------------------------------------------------------*/
         ret = Flash_Erase(SECTORB|SECTORC|SECTORD,&Flash_Status);
         __set_PRIMASK(0); //打开全局中断;
         if(can_addr != 0x00)
@@ -160,7 +131,7 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
                       (((u32)(pRxMessage->CAN_Rx_msg_data.msg_byte.data[1])&0x00FFFFFF)<<16)|\
                       (((u32)(pRxMessage->CAN_Rx_msg_data.msg_byte.data[2])&0x0000FFFF)<<8)|\
                       (((u32)(pRxMessage->CAN_Rx_msg_data.msg_byte.data[3])&0x000000FF)<<0);
-        start_addr   = APP_START_ADDR+addr_offset;
+        start_addr   = APP_START_ADDR+(addr_offset>>1);//FLASHD : origin = 0x3E8000 DSP的FLASH是16bit的，所以地址偏移量得除以2
         data_size = (((u32)(pRxMessage->CAN_Rx_msg_data.msg_byte.data[4])&0xFFFFFFFF)<<24)|\
                     (((u32)(pRxMessage->CAN_Rx_msg_data.msg_byte.data[5])&0x00FFFFFF)<<16)|\
                     (((u32)(pRxMessage->CAN_Rx_msg_data.msg_byte.data[6])&0x0000FFFF)<<8)|\
@@ -194,19 +165,14 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
         }
         if((data_index>=data_size)||(data_index>=DATA_PACK_SIZE))
         {
-            crc_data = CRCcalc16(data_temp,data_size-2);//对接收到的数据做CRC校验，保证数据完整性
-            if(crc_data==((data_temp[data_size-2])|(data_temp[data_size-1]<<8)))
+            crc_data = crc16_ccitt(data_temp,data_size-2);//对接收到的数据做CRC校验，保证数据完整性
+            if(crc_data==((data_temp[data_size-2]<<8)|(data_temp[data_size-1])))
             {
                 __set_PRIMASK(1);
-                /*
-                FLASH_Unlock();
-                ret =  CAN_BOOT_ProgramDatatoFlash(start_addr,data_temp,data_size-2);
-                FLASH_Lock();
-                */
                 //此处是将接收到的数据写入FLASH,关键之处,需要仔细考虑
                 for(i = 0;i<(data_size-2)>>1;i++)
                 {
-                    write_temp[i] = data_temp[2*i]<<8|data_temp[2*i+1];
+                    write_temp[i] = (data_temp[2*i]<<0)|(data_temp[2*i+1]<<8);
                 }
                 ret = Flash_WR(start_addr,write_temp,(data_size-2)>>1);
                 __set_PRIMASK(0);
@@ -267,9 +233,9 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
                     (((u32)(pRxMessage->CAN_Rx_msg_data.msg_byte.data[3])&0x000000FF)<<0);
         if(exe_type == CAN_BL_APP)
         {
-            if((*((uint32_t *)APP_START_ADDR)!=0xFFFFFFFF))
+            if((*((uint32_t *)0x3E8010)!=0xFFFFFFFF))
             {
-                CAN_BOOT_JumpToApplication(APP_START_ADDR);
+                CAN_BOOT_JumpToApplication(0x3E8010);
             }
         }
         return;

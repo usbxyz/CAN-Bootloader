@@ -44,7 +44,7 @@ int main(void)
 		CAN_BOOT_JumpToApplication(APP_START_ADDR);
 	}
 	*/
-	CAN_Config(CANA,500);
+	CAN_Config(CANA,1000);
 	CAN_Rx_Config();
 	CAN_Rx_IT_Concig();
 	//閰嶇疆LED鎸囩ず鐏�
@@ -78,7 +78,7 @@ int main(void)
 		{
 		    GpioDataRegs.GPADAT.bit.GPIO1 = 0;
 		    GpioDataRegs.GPADAT.bit.GPIO0 = 0;
-			CAN_BOOT_JumpToApplication(APP_START_ADDR);
+			CAN_BOOT_JumpToApplication(0x3E8010);
 		}
 	}
 }

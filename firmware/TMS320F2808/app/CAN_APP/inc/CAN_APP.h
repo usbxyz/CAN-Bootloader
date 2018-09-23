@@ -1,28 +1,25 @@
 /*
- * BootLoader.h
+ * CAN_APP.h
  *
- *  Created on: 2017骞�4鏈�19鏃�
+ *  Created on: 2017年5月21日
  *      Author: admin
  */
 
-#ifndef BOOTLOADER_BOOTLOADER_H_
-#define BOOTLOADER_BOOTLOADER_H_
+#ifndef CAN_APP_INC_CAN_APP_H_
+#define CAN_APP_INC_CAN_APP_H_
 #include "include.h"
 #include "data.h"
-#include "delay.h"
 #include "stdint.h"
 #include "CANA.h"
 #include "Flash.h"
-#define APP_START_ADDR  ((uint32_t)0x3E8000)
+#define APP_START_ADDR      ((uint32_t)0x3E8000)
+#define BOOT_START_ADDR     ((uint32_t)0x3F4000)
 #define CAN_BL_APP      0xAAAAAAAA
 #define CAN_BL_BOOT     0x55555555
-//#define FW_TYPE         CAN_BL_BOOT
-#define DATA_PACK_SIZE  (1024+2)//包含2字节CRC16校验
 #define DEVICE_ADDR 0x134//设备地址
 #define CAN_BOOT_GetAddrData() DEVICE_ADDR
-#define CMD_WIDTH 4
+#define CMD_WIDTH       4
 #define CMD_MASK  0xF
-#define ADDR_WIDTH 12
 typedef struct _Device_INFO
 {
     union
@@ -44,8 +41,8 @@ typedef struct _bootloader_data
         u32 all;
         struct
         {
-            u16 cmd :CMD_WIDTH; //命令
-            u16 addr :ADDR_WIDTH; //设备地址
+            u16 cmd :4; //命令
+            u16 addr :12; //设备地址
             u16 reserve :16; //保留位
         } bit;
     } ExtId; //扩展帧ID
@@ -57,16 +54,14 @@ typedef struct _Boot_CMD_LIST
 {
     //Bootloader相关命令
     unsigned char Erase;        //擦出APP储存扇区数据
+    unsigned char WriteInfo;    //设置多字节写数据相关参数（写起始地址，数据量）
     unsigned char Write;        //以多字节形式写数据
     unsigned char Check;        //检测节点是否在线，同时返回固件信息
-    unsigned char Excute;       //执行固件
-    unsigned char WriteInfo;    //设置多字节写数据相关参数（写起始地址，数据量）
     unsigned char SetBaudRate;  //设置节点波特率
-    //节点返回状态,关键
-    unsigned char CmdFaild;     //命令执行失败
+    unsigned char Excute;       //执行固件
+    //节点返回状态
     unsigned char CmdSuccess;   //命令执行成功
-
-
+    unsigned char CmdFaild;     //命令执行失败
 } Boot_CMD_LIST;
 extern Boot_CMD_LIST cmd_list;
 extern bootloader_data Bootloader_data;
@@ -79,4 +74,4 @@ unsigned short int CRCcalc16 (unsigned char *data,unsigned short int len);
 void CAN_BOOT_JumpToApplication(uint32_t Addr);
 void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage);
 
-#endif /* BOOTLOADER_BOOTLOADER_H_ */
+#endif /* CAN_APP_INC_CAN_APP_H_ */
