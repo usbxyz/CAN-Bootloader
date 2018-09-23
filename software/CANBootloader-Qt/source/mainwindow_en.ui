@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>728</width>
+    <width>734</width>
     <height>486</height>
    </rect>
   </property>
@@ -363,6 +363,16 @@
               </layout>
              </item>
              <item>
+              <widget class="QCheckBox" name="checkBoxEnResistor">
+               <property name="text">
+                <string>EnResistor</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -638,7 +648,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>728</width>
+     <width>734</width>
      <height>23</height>
     </rect>
    </property>

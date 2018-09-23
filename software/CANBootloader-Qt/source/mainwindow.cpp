@@ -72,7 +72,7 @@ bool MainWindow::DeviceConfig(void)
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Open device faild!");
 #else
-        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("打开设备失败！"));
+        QMessageBox::warning(this,"警告","打开设备失败！");
 #endif
         return false;
     }
@@ -83,7 +83,7 @@ bool MainWindow::DeviceConfig(void)
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Get device infomation faild!");
 #else
-        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("获取设备信息失败！"));
+        QMessageBox::warning(this,"警告","获取设备信息失败！");
 #endif
         return false;
     }
@@ -122,7 +122,9 @@ bool MainWindow::DeviceConfig(void)
         CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
         CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
     }
-    CAN_InitConfig.CAN_Mode |= 0x80;
+    if(ui->checkBoxEnResistor->isChecked()){
+        CAN_InitConfig.CAN_Mode |= 0x80;
+    }
     ret = CAN_BL_Init(DeviceHandle,
                      ui->channelIndexComboBox->currentIndex(),
                      &CAN_InitConfig,
@@ -151,7 +153,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
             QMessageBox::warning(this,"Warning","No CAN node!");
 #else
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("无任何节点！"));
+            QMessageBox::warning(this,"警告","无任何节点！");
 #endif
             return;
         }
@@ -160,7 +162,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
             QMessageBox::warning(this,"Warning","Please Select a CAN node!");
 #else
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("请选择节点！"));
+            QMessageBox::warning(this,"警告","请选择节点！");
 #endif
             return;
         }
@@ -180,7 +182,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
             QMessageBox::warning(this,"Warning","Execute firmware faild!");
 #else
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
+            QMessageBox::warning(this,"警告","执行固件程序失败！");
 #endif
             USB_CloseDevice(DeviceHandle);
             return;
@@ -208,7 +210,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
                     QMessageBox::warning(this,"Warning","Execute firmware faild!");
 #else
-                    QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
+                    QMessageBox::warning(this,"警告","执行固件程序失败！");
 #endif
                     USB_CloseDevice(DeviceHandle);
                     return;
@@ -223,7 +225,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
             QMessageBox::warning(this,"Warning","Check CAN node faild!");
 #else
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("节点检测失败！"));
+            QMessageBox::warning(this,"警告","节点检测失败！");
 #endif
             USB_CloseDevice(DeviceHandle);
             return;
@@ -243,7 +245,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
                     QMessageBox::warning(this,"Warning","Current firmware is not bootloader!");
 #else
-                    QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("当前固件不为Bootloader固件！"));
+                    QMessageBox::warning(this,"警告","当前固件不为Bootloader固件！");
 #endif
                     USB_CloseDevice(DeviceHandle);
                     return;
@@ -252,12 +254,13 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
                 QMessageBox::warning(this,"Warning","Check CAN node faild!");
 #else
-                QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("节点检测失败！"));
+                QMessageBox::warning(this,"警告","节点检测失败！");
 #endif
                 USB_CloseDevice(DeviceHandle);
                 return;
             }
         }
+        QCoreApplication::processEvents(QEventLoop::AllEvents);
         ret = CAN_BL_Erase(DeviceHandle,
                            ui->channelIndexComboBox->currentIndex(),
                            NodeAddr,
@@ -273,7 +276,8 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             USB_CloseDevice(DeviceHandle);
             return;
         }
-        if(ui->allNodeCheckBox->isChecked()){//批量更新的时候，由于不检测节点状态返回，所以需要在这里增加延时函数
+        //批量更新的时候，由于不检测节点状态返回，所以需要在这里增加延时函数，延时的时间一定要大于芯片数据擦除的时间，否则后面写入数据会失败
+        if(ui->allNodeCheckBox->isChecked()){
 #ifndef OS_UNIX
             Sleep(1000);
 #else
@@ -285,8 +289,8 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
         QProgressDialog writeDataProcess("Upgrade firmware...","Cancel",0,firmwareFile.size(),this);
         writeDataProcess.setWindowTitle("Upgrade firmware");
 #else
-        QProgressDialog writeDataProcess(QStringLiteral("正在更新固件..."),QStringLiteral("取消"),0,firmwareFile.size(),this);
-        writeDataProcess.setWindowTitle(QStringLiteral("更新固件"));
+        QProgressDialog writeDataProcess("正在更新固件...","取消",0,firmwareFile.size(),this);
+        writeDataProcess.setWindowTitle("更新固件");
 #endif
         writeDataProcess.setModal(true);
         writeDataProcess.show();
@@ -306,7 +310,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
                 QMessageBox::warning(this,"Warning","Write flash faild!");
 #else
-                QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("写Flash数据失败！"));
+                QMessageBox::warning(this,"警告","写Flash数据失败！");
 #endif
                 USB_CloseDevice(DeviceHandle);
                 return;
@@ -336,7 +340,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Open firmware file faild!");
 #else
-        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("打开固件文件失败！"));
+        QMessageBox::warning(this,"警告","打开固件文件失败！");
 #endif
         return;
     }
@@ -349,7 +353,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Execute firmware faild!");
 #else
-        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
+        QMessageBox::warning(this,"警告","执行固件程序失败！");
 #endif
     }
 #ifndef OS_UNIX
@@ -375,7 +379,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             str.sprintf("v%d.%d",(((appversion>>24)&0xFF)*10)+(appversion>>16)&0xFF,(((appversion>>8)&0xFF)*10)+appversion&0xFF);
             ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),2)->setText(str);
         }else{
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("执行固件程序失败！"));
+            QMessageBox::warning(this,"警告","执行固件程序失败！");
         }
     }
     USB_CloseDevice(DeviceHandle);
@@ -412,8 +416,8 @@ void MainWindow::on_scanNodeAction_triggered()
     QProgressDialog scanNodeProcess("Scanning CAN node...","Cancel",0,MAX_NODE_NUM,this);
     scanNodeProcess.setWindowTitle("Scanning CAN node");
 #else
-    QProgressDialog scanNodeProcess(QStringLiteral("正在扫描节点..."),QStringLiteral("取消"),0,endAddr-startAddr,this);
-    scanNodeProcess.setWindowTitle(QStringLiteral("扫描节点"));
+    QProgressDialog scanNodeProcess("正在扫描节点...","取消",0,endAddr-startAddr,this);
+    scanNodeProcess.setWindowTitle("扫描节点");
 #endif
     scanNodeProcess.setModal(true);
     scanNodeProcess.show();
@@ -470,7 +474,7 @@ void MainWindow::on_setbaudRatePushButton_clicked()
 #ifdef LANGUE_EN
             QMessageBox::warning(this,"Warning","No CAN node!");
 #else
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("无任何节点！"));
+            QMessageBox::warning(this,"警告","无任何节点！");
 #endif
             return;
         }
@@ -479,7 +483,7 @@ void MainWindow::on_setbaudRatePushButton_clicked()
 #ifdef LANGUE_EN
             QMessageBox::warning(this,"Warning","Please select a CAN node!");
 #else
-            QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("请选择节点！"));
+            QMessageBox::warning(this,"警告","请选择节点！");
 #endif
             return;
         }
@@ -506,6 +510,9 @@ void MainWindow::on_setbaudRatePushButton_clicked()
         CAN_InitConfig.CAN_BS1 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS1;
         CAN_InitConfig.CAN_BS2 = CANBaudRateTab[CAN_GetBaudRateNum(baud)].BS2;
     }
+    if(ui->checkBoxEnResistor->isChecked()){
+        CAN_InitConfig.CAN_Mode |= 0x80;
+    }
     uint16_t NodeAddr;
     if(ui->allNodeCheckBox->isChecked()){
         NodeAddr = 0x00;
@@ -523,7 +530,7 @@ void MainWindow::on_setbaudRatePushButton_clicked()
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Set baud rate faild!");
 #else
-        QMessageBox::warning(this,QStringLiteral("警告"),QStringLiteral("设置波特率失败！"));
+        QMessageBox::warning(this,"警告","设置波特率失败！");
 #endif
         return;
     }
