@@ -7,6 +7,8 @@
 #include "CAN_APP.h"
 typedef  void (*pFunction)(void);
 
+extern void write_boot_flag(u8 flag);
+
 Boot_CMD_LIST cmd_list =
 {
     .Erase = 0x00,      //擦除APP区域数据
@@ -70,6 +72,20 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
     TxMessage.MBox_num = 0x0;
     TxMessage.Tx_timeout_cnt = 100;
     TxMessage.SAE_J1939_Flag = 0;
+
+    TxMessage.ExtId.bit.ExtId = (DEVICE_INFO.Device_addr.bits.Device_addr<<CMD_WIDTH)|cmd_list.CmdSuccess;
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[0] = (u8)(DEVICE_INFO.FW_Version>>24);;//主版本号，两字节
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[1] = (u8)(DEVICE_INFO.FW_Version>>16);
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[2] = (u8)(DEVICE_INFO.FW_Version>>8);//次版本号，两字节
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[3] = (u8)(DEVICE_INFO.FW_Version>>0);
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[4] = (u8)(DEVICE_INFO.FW_TYPE>>24);
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[5] = (u8)(DEVICE_INFO.FW_TYPE>>16);
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[6] = (u8)(DEVICE_INFO.FW_TYPE>>8);
+    TxMessage.CAN_Tx_msg_data.msg_byte.data[7] = (u8)(DEVICE_INFO.FW_TYPE>>0);
+    TxMessage.DLC = 8;
+    CAN_Tx_Msg(&TxMessage);
+
+
     //获取地址信息
     can_cmd = (pRxMessage->ExtId.all)&CMD_MASK;//ID的bit0~bit3位为命令码
     can_addr = (pRxMessage->ExtId.all >> CMD_WIDTH);//ID的bit4~bit15位为节点地址
@@ -110,6 +126,9 @@ void CAN_BOOT_ExecutiveCommand(CanRxMsg *pRxMessage)
         {
             if((*((uint32_t *)BOOT_START_ADDR)!=0xFFFFFFFF))
             {
+#if BOOT_FLAG_OF_EEPROM
+                write_boot_flag(1);
+#endif
                 CAN_BOOT_JumpToApplication(0x3F7FF6);
             }
         }

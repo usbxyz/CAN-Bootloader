@@ -20,6 +20,10 @@
 #define CAN_BOOT_GetAddrData() DEVICE_ADDR
 #define CMD_WIDTH       4
 #define CMD_MASK  0xF
+
+#define BOOT_FLAG_OF_EEPROM 0   //启动运行标志存储在EEPROM中
+#define ENABLE_TEST_LED     0
+
 typedef struct _Device_INFO
 {
     union

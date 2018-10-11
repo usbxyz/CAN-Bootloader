@@ -41,14 +41,14 @@ interrupt void cpu_timer0_isr(void)
 	     {
 	  	   updata_info.time_cnt++;
 	  	 CpuTimer0.InterruptCount = 0;
-	  	   if(updata_info.time_cnt == 10)
+	  	   if(updata_info.time_cnt == 2)//定时时间2秒
 	  	   {
 	  		   updata_info.time_out_flag = 1;
 	  	   }
 	     }
    }
 
-   GpioDataRegs.GPATOGGLE.bit.GPIO0 = 1; // Toggle GPIO32 once per 500 milliseconds
+   //GpioDataRegs.GPATOGGLE.bit.GPIO0 = 1; // Toggle GPIO32 once per 500 milliseconds
    // Acknowledge this interrupt to receive more interrupts from group 1
    PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }

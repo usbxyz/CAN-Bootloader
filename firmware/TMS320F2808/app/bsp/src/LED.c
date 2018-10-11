@@ -28,7 +28,7 @@ void LED_Timer_Config(void)
 	InitCpuTimers();
 	ConfigCpuTimer(&CpuTimer0, 150, 50000);//250ms
 	CpuTimer0Regs.TCR.all = 0x4001; // Use write-only instruction to set TSS bit = 0
-	 CpuTimer0.InterruptCount = 0;
+	CpuTimer0.InterruptCount = 0;
 
 
 }

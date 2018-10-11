@@ -223,7 +223,7 @@ void InitPeripheralClocks(void)
 
    SysCtrlRegs.PCLKCR0.bit.ADCENCLK = 0;    // ADC
    SysCtrlRegs.PCLKCR0.bit.I2CAENCLK = 0;   // I2C
-   SysCtrlRegs.PCLKCR1.bit.ECAP1ENCLK = 0;  // eCAP1
+   SysCtrlRegs.PCLKCR1.bit.ECAP1ENCLK = 1;  // eCAP1
    SysCtrlRegs.PCLKCR1.bit.ECAP2ENCLK = 0;  // eCAP2
    SysCtrlRegs.PCLKCR1.bit.EPWM1ENCLK = 0;  // ePWM1
    SysCtrlRegs.PCLKCR1.bit.EPWM2ENCLK = 0;  // ePWM2
