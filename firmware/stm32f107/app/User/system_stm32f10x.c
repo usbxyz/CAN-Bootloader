@@ -93,6 +93,7 @@
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */ 
 /* #define VECT_TAB_SRAM */
+//若是要进行调试，则需要把这个宏定义设置为0，正常模式下需要设置为偏移值，比如app的起始地址设置为0x8008000，那么正常情况下这个宏定义就要设置为0x8000
 #define VECT_TAB_OFFSET  0x8000 /*!< Vector Table base offset field. 
                                   This value must be a multiple of 0x100. */
 
@@ -228,7 +229,7 @@ void SystemInit (void)
   /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
   /* Configure the Flash Latency cycles and enable prefetch buffer */
   SetSysClock();
-
+//设置中断偏移向量
 #ifdef VECT_TAB_SRAM
   SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
 #else

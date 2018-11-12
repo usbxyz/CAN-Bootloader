@@ -199,7 +199,7 @@ void TIM2_IRQHandler(void)
 void CAN_GPIO_Configuration(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-    
+#if 0//根据自己的实际硬件选择使用不同的引脚配置程序
   /*外设时钟设置*/
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
@@ -215,7 +215,27 @@ void CAN_GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;		         // 复用推挽输出
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;    
   GPIO_Init(GPIOA, &GPIO_InitStructure);
+#else
+  /*外设时钟设置*/
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD | RCC_APB2Periph_AFIO, ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
+
+	/* Remap CAN1 GPIOs */
+	GPIO_PinRemapConfig(GPIO_Remap2_CAN1,  ENABLE);
 	
+  /* Configure CAN pin: RX PA11*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	             // 上拉输入
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+  /* Configure CAN pin: TX PA12 */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;		         // 复用推挽输出
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;    
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+#endif
 }
 /**
   * @brief  CAN接收中断配置

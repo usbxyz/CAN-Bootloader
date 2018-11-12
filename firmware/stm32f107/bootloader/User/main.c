@@ -178,6 +178,7 @@ int main(void)
   To reconfigure the default setting of SystemInit() function, refer to
   system_stm32fxxx.c file
   */
+	//时钟配置函数在system_stm32f10x.c文件的SetSysClockTo72()函数中
   if(*((uint32_t *)APP_EXE_FLAG_ADDR)==0x78563412){
     CAN_BOOT_JumpToApplication(APP_START_ADDR);
   }
