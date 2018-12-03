@@ -9,6 +9,7 @@
 #include "scandevrangedialog.h"
 #include "usb_device.h"
 #include "usb2can.h"
+#include "dialogaddnode.h"
 
 namespace Ui {
 class MainWindow;
@@ -111,6 +112,8 @@ private slots:
     void on_aboutAction_triggered();
 
     void on_exitAction_triggered();
+
+    void on_actionAddNode_triggered();
 
 private:
     Ui::MainWindow *ui;

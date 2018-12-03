@@ -14,7 +14,7 @@
    <string>USB2XXX USB2CAN Bootloader</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="image.qrc">
+   <iconset>
     <normaloff>:/images/easyicon_net.png</normaloff>:/images/easyicon_net.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -652,6 +652,7 @@
      <string>操作</string>
     </property>
     <addaction name="scanNodeAction"/>
+    <addaction name="actionAddNode"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -672,7 +673,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="exitAction">
    <property name="icon">
-    <iconset resource="image.qrc">
+    <iconset>
      <normaloff>:/images/gif_48_026.gif</normaloff>:/images/gif_48_026.gif</iconset>
    </property>
    <property name="text">
@@ -681,7 +682,7 @@
   </action>
   <action name="scanNodeAction">
    <property name="icon">
-    <iconset resource="image.qrc">
+    <iconset>
      <normaloff>:/images/gif_48_086.gif</normaloff>:/images/gif_48_086.gif</iconset>
    </property>
    <property name="text">
@@ -690,7 +691,7 @@
   </action>
   <action name="contactUsAction">
    <property name="icon">
-    <iconset resource="image.qrc">
+    <iconset>
      <normaloff>:/images/gif_48_079.gif</normaloff>:/images/gif_48_079.gif</iconset>
    </property>
    <property name="text">
@@ -699,7 +700,7 @@
   </action>
   <action name="aboutAction">
    <property name="icon">
-    <iconset resource="image.qrc">
+    <iconset>
      <normaloff>:/images/gif_48_052.gif</normaloff>:/images/gif_48_052.gif</iconset>
    </property>
    <property name="text">
@@ -708,17 +709,20 @@
   </action>
   <action name="openFirmwareFileAction">
    <property name="icon">
-    <iconset resource="image.qrc">
+    <iconset>
      <normaloff>:/images/gif_48_045.gif</normaloff>:/images/gif_48_045.gif</iconset>
    </property>
    <property name="text">
     <string>打开文件</string>
    </property>
   </action>
+  <action name="actionAddNode">
+   <property name="text">
+    <string>添加节点</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

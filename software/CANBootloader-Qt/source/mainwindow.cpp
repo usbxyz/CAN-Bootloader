@@ -265,7 +265,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
                            ui->channelIndexComboBox->currentIndex(),
                            NodeAddr,
                            firmwareFile.size(),
-                           5000);
+                           8000);
         if(ret != CAN_SUCCESS){
             qDebug()<<"CBL_EraseFlash = "<<ret;
 #ifdef LANGUE_EN
@@ -431,7 +431,7 @@ void MainWindow::on_scanNodeAction_triggered()
                             startAddr,
                             &appversion,
                             &appType,
-                            50);
+                            100);
         if(ret == CAN_SUCCESS){
             ui->nodeListTableWidget->setRowCount(ui->nodeListTableWidget->rowCount()+1);
             ui->nodeListTableWidget->setRowHeight(ui->nodeListTableWidget->rowCount()-1,20);
@@ -540,6 +540,7 @@ void MainWindow::on_setbaudRatePushButton_clicked()
 
 void MainWindow::on_contactUsAction_triggered()
 {
+    return;
     QString AboutStr;
 #ifndef LANG_EN
     AboutStr.append(("官方网站<span style=\"font-size:12px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>：<a href=\"http://www.usbxyz.com\">www.usbxyz.com</a><br>"));
@@ -560,6 +561,7 @@ void MainWindow::on_contactUsAction_triggered()
 
 void MainWindow::on_aboutAction_triggered()
 {
+    return;
     QString AboutStr;
     AboutStr.append("USB2XXX USB2CAN Bootloader 1.0.3<br>");
 #ifndef LANG_EN
@@ -579,3 +581,26 @@ void MainWindow::on_exitAction_triggered()
 }
 
 
+
+void MainWindow::on_actionAddNode_triggered()
+{
+    DialogAddNode *pDialogAddNode = new DialogAddNode(this);
+    if(pDialogAddNode->exec() == QDialog::Accepted){
+        ui->nodeListTableWidget->setRowCount(ui->nodeListTableWidget->rowCount()+1);
+        ui->nodeListTableWidget->setRowHeight(ui->nodeListTableWidget->rowCount()-1,20);
+        QString str;
+        str.sprintf("0x%X",pDialogAddNode->NodeAddr);
+        QTableWidgetItem *item = new QTableWidgetItem(str);
+        ui->nodeListTableWidget->setItem(ui->nodeListTableWidget->rowCount()-1,0,item);
+        if(pDialogAddNode->NodeType == CAN_BL_BOOT){
+            str = "BOOT";
+        }else{
+            str = "APP";
+        }
+        item = new QTableWidgetItem(str);
+        ui->nodeListTableWidget->setItem(ui->nodeListTableWidget->rowCount()-1,1,item);
+        //str.sprintf("v%d.%d",(((appversion>>24)&0xFF)*10)+(appversion>>16)&0xFF,(((appversion>>8)&0xFF)*10)+appversion&0xFF);
+        //item = new QTableWidgetItem(str);
+        //ui->nodeListTableWidget->setItem(ui->nodeListTableWidget->rowCount()-1,2,item);
+    }
+}
