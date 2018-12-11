@@ -51,10 +51,10 @@ tCAN_BaudRate  CAN_BaudRateInitTab[]= {      // CLK=36MHz
    {CAN_SJW_1tq,CAN_BS1_16tq,CAN_BS2_1tq,25},   // 80K
    {CAN_SJW_1tq,CAN_BS1_14tq,CAN_BS2_1tq,30},	// 75K
    {CAN_SJW_1tq,CAN_BS1_13tq,CAN_BS2_1tq,40},    // 60K
-   {CAN_SJW_1tq,CAN_BS1_14tq,CAN_BS2_1tq,45},    // 50K
-   {CAN_SJW_1tq,CAN_BS1_16tq,CAN_BS2_1tq,50},    // 40K
-   {CAN_SJW_1tq,CAN_BS1_14tq,CAN_BS2_1tq,75},   // 30K
-   {CAN_SJW_1tq,CAN_BS1_16tq,CAN_BS2_1tq,100},   // 20K
+   {CAN_SJW_1tq,CAN_BS1_6tq,CAN_BS2_1tq,90},    // 50K
+   {CAN_SJW_1tq,CAN_BS1_16tq,CAN_BS2_3tq,45},    // 40K
+   {CAN_SJW_1tq,CAN_BS1_6tq,CAN_BS2_1tq,150},   // 30K
+   {CAN_SJW_1tq,CAN_BS1_6tq,CAN_BS2_1tq,225},   // 20K
 };
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
