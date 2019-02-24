@@ -32,7 +32,8 @@ RC_FILE = \
 FORMS += \
     ../source/mainwindow_ch.ui \
     ../source/mainwindow_en.ui \
-    ../source/scandevrangedialog.ui
+    ../source/scandevrangedialog.ui \
+    ../source/dialogaddnode.ui
 
 OTHER_FILES += \
     ../source/ico.rc
@@ -41,9 +42,11 @@ HEADERS += \
     ../source/mainwindow.h \
     ../source/usb_device.h \
     ../source/usb2can.h \
-    ../source/scandevrangedialog.h
+    ../source/scandevrangedialog.h \
+    ../source/dialogaddnode.h
 
 SOURCES += \
     ../source/main.cpp \
     ../source/mainwindow.cpp \
-    ../source/scandevrangedialog.cpp
+    ../source/scandevrangedialog.cpp \
+    ../source/dialogaddnode.cpp

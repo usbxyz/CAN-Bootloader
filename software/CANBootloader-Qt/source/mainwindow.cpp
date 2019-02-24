@@ -296,7 +296,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
         writeDataProcess.show();
         QCoreApplication::processEvents(QEventLoop::AllEvents);
         int i=0;
-        int PackSize = 512;
+        int PackSize = 256;
         for(i=0;i<firmwareFile.size();i+=PackSize){
             read_data_num = firmwareFile.read((char*)FirmwareData,PackSize);
             ret = CAN_BL_Write(DeviceHandle,
@@ -310,7 +310,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
                 QMessageBox::warning(this,"Warning","Write flash faild!");
 #else
-                QMessageBox::warning(this,"警告","写Flash数据失败！");
+                QMessageBox::warning(this,"警告",QString().sprintf("写Flash数据失败！%d",ret));
 #endif
                 USB_CloseDevice(DeviceHandle);
                 return;
@@ -353,7 +353,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
 #ifdef LANGUE_EN
         QMessageBox::warning(this,"Warning","Execute firmware faild!");
 #else
-        QMessageBox::warning(this,"警告","执行固件程序失败！");
+        QMessageBox::warning(this,"警告",QString().sprintf("执行固件程序失败！%d",ret));
 #endif
     }
 #ifndef OS_UNIX
@@ -379,7 +379,7 @@ void MainWindow::on_updateFirmwarePushButton_clicked()
             str.sprintf("v%d.%d",(((appversion>>24)&0xFF)*10)+(appversion>>16)&0xFF,(((appversion>>8)&0xFF)*10)+appversion&0xFF);
             ui->nodeListTableWidget->item(ui->nodeListTableWidget->currentIndex().row(),2)->setText(str);
         }else{
-            QMessageBox::warning(this,"警告","执行固件程序失败！");
+            QMessageBox::warning(this,"警告",QString().sprintf("检测固件程序执行失败！%d",ret));
         }
     }
     USB_CloseDevice(DeviceHandle);
