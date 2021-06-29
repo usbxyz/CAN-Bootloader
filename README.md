@@ -17,7 +17,7 @@
 
 # 参考资料<br>
 * 此项目所要用到的USB2CAN适配器可以到此购买：https://usb2xxx.taobao.com/<br>
-* 上位机软件里面用到的API函数说明文档可以访问：http://www.usbxyz.com/<br>
+* 上位机软件里面用到的API函数说明文档可以访问：http://www.toomoss.com/help/<br>
 * 若在使用过程中有任何不清楚的地方可以QQ咨询我：188298598
 
 # 好消息！！！<br>
