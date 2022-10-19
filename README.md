@@ -1,5 +1,8 @@
 # CAN-Bootloader
 使用USB2XXX实现的CAN Bootloader功能，实现CAN节点固件远程升级
+
+基于大家的需求，我们重新推出了基于CAN UDS协议的Bootloader/固件升级，程序通用性更强，也更加实用，代码下载链接：[https://gitee.com/toomoss_admin/can_uds_bootloader](https://gitee.com/toomoss_admin/can_uds_bootloader)
+
 # 功能简介<br>
 * 利用CAN总线实现对有CAN总线接口的设备进行固件升级；<br>
 * 升级采用一键升级方式，傻瓜式操作，方便使用；<br>
